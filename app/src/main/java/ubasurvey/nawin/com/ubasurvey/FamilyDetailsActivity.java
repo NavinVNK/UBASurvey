@@ -2,7 +2,10 @@ package ubasurvey.nawin.com.ubasurvey;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,12 +52,14 @@ public class FamilyDetailsActivity extends AppCompatActivity {
     String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubainsertfamilydetails.php";
     String HttpupdateUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdatefamilydetail.php";
     private boolean update;
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_family_details);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .familycoordinatorLayout);
         Bundle bundle = getIntent().getExtras();
         progressDialog = new ProgressDialog(FamilyDetailsActivity.this);
         globalVar=(ChoiceApplication)getApplicationContext();
@@ -63,6 +68,11 @@ public class FamilyDetailsActivity extends AppCompatActivity {
 
 
         nameEdit_handler = findViewById(R.id.familymembers_name_text);
+/*        if(globalVar.getFamilyMemCount()==2)
+            nameEdit_handler.setEnabled(false);
+        else
+            nameEdit_handler.setEnabled(true)*/;
+
         ageEditHandler = (EditText)findViewById(R.id.family_age_text);
         majorHealthEdit_Handler=(EditText)findViewById(R.id.healthproblems_text);
 
@@ -86,6 +96,7 @@ public class FamilyDetailsActivity extends AppCompatActivity {
 
         if(extras != null) {
            update=true;
+
 
            // int pos=extras.getInt("position");//get from bundle
             String familyjsonValue=extras.getString("familyrecord");
@@ -148,8 +159,17 @@ public class FamilyDetailsActivity extends AppCompatActivity {
 
         majorHealthValue=String.valueOf(majorHealthEdit_Handler.getText());
         occupationValue =occupationSpinnerHandler.getSelectedItem().toString();
+        if(nameValue.length()==0)
+            nameEdit_handler.setError("Cannot be empty");
+        if(genderValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)genderSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
 
-       if(nameValue.compareTo("")==0)
+       if(nameValue.compareTo("")==0||genderValue.compareTo("Select Value")==0)
              return false;
        /* if(bankACValue.compareTo("Select Value")==0||genderValue.compareTo("Select Value")==0||maritialValue.compareTo("Select Value")==0||
                 schoolValue.compareTo("Select Value")==0||aadharValue.compareTo("Select Value")==0||ageValue.compareTo("")==0
@@ -194,10 +214,10 @@ public class FamilyDetailsActivity extends AppCompatActivity {
 
                             else
                             {
-                                Toast toast = Toast.makeText(getApplicationContext(),
+/*                                Toast toast = Toast.makeText(getApplicationContext(),
                                         ServerResponse,
                                         Toast.LENGTH_LONG);
-                                toast.show();
+                                toast.show();*/
                                     Intent data = new Intent();
                                     //data.setData(Uri.parse("hello"));
                                 data.putExtra(ServerResponse,"value");
@@ -226,7 +246,23 @@ public class FamilyDetailsActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(FamilyDetailsActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                     }
                 }) {
             @Override
@@ -295,7 +331,23 @@ public class FamilyDetailsActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(FamilyDetailsActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                         finish();;
                     }
                 }) {
@@ -327,13 +379,24 @@ public class FamilyDetailsActivity extends AppCompatActivity {
         //JSONArray jsonarray = new JSONArray(jsonString);
         //JSONObject jobj = jsonarray.getJSONObject(pos);
             JSONObject jobj = new JSONObject(jsonString);
-            Toast toast = Toast.makeText(getApplicationContext(),
+/*            Toast toast = Toast.makeText(getApplicationContext(),
                     "Family "+jobj.toString(),
                     Toast.LENGTH_LONG);
 
-            toast.show();
+            toast.show();*/
             ubaid=jobj.getString("ubaid");
             ubaindid =jobj.getString("ubaindid").toString();
+
+            if(ubaindid.compareTo("1")==0) {
+
+                nameEdit_handler.setEnabled(false);
+                genderSpinnerHandler.setEnabled(false);
+                nameEdit_handler.setError("HouseHead name will not be editable ");
+            }
+            else {
+                nameEdit_handler.setEnabled(true);
+                genderSpinnerHandler.setEnabled(true);
+            }
             nameValue=jobj.getString("name");
             if(nameValue.compareTo("no")==0)
                 nameValue = "";
@@ -406,6 +469,7 @@ public class FamilyDetailsActivity extends AppCompatActivity {
 
         nameEdit_handler.setText(nameValue);
         ageEditHandler.setText(ageValue);
+        majorHealthEdit_Handler.setText(majorHealthValue);
 
     }
     int  setSpinnerPos(Spinner spinner,String value)

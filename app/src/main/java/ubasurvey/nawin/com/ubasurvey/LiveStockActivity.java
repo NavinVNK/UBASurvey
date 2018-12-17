@@ -1,13 +1,18 @@
 package ubasurvey.nawin.com.ubasurvey;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -38,12 +43,15 @@ public class LiveStockActivity extends AppCompatActivity {
     // Storing server url into String variable.
     String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformtwelve.php";
     String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+    private CoordinatorLayout coordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_live_stock);
-
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .livestockcoordinatelayout);
         progressDialog = new ProgressDialog(LiveStockActivity.this);
         globalVar=(ChoiceApplication)getApplicationContext();
         ubaid=globalVar.getUbaid();
@@ -77,7 +85,7 @@ public class LiveStockActivity extends AppCompatActivity {
                 {
                     YoYo.with(Techniques.BounceInUp)
                             .duration(700)
-                            .playOn(findViewById(R.id.household_btn_submit));
+                            .playOn(findViewById(R.id.livestock_btn_submit));
                 }
 
 
@@ -97,7 +105,7 @@ public class LiveStockActivity extends AppCompatActivity {
 
 
             cowsValue = String.valueOf(total_Cows_EditHandler.getText());
-            buffalosValue = String.valueOf(total_Buffalo_EditHandler.getText());
+              buffalosValue = String.valueOf(total_Buffalo_EditHandler.getText());
             goats_sheep_Value = String.valueOf(total_Goat_Sheep_Handler.getText());
             calvesValue = String.valueOf(total_Calves_EditHandler.getText());
             bullocksValue = String.valueOf(total_Bullock_EditHandler.getText());
@@ -106,7 +114,39 @@ public class LiveStockActivity extends AppCompatActivity {
             milkProductionValue=String.valueOf(milk_Production_EditHandler.getText());
             wasteValue=String.valueOf(waste_EditHandler.getText());
             shelterValue = typeofshelterSpinnerHandler.getSelectedItem().toString();
-        return true;
+        if(cowsValue.length()==0)
+            total_Cows_EditHandler.setError("Cannot be empty");
+        if(buffalosValue.length()==0)
+            total_Buffalo_EditHandler.setError("Cannot be empty");
+        if(goats_sheep_Value.length()==0)
+            total_Goat_Sheep_Handler.setError("Cannot be empty");
+        if(calvesValue.length()==0)
+            total_Calves_EditHandler.setError("Cannot be empty");
+        if(bullocksValue.length()==0)
+            total_Bullock_EditHandler.setError("Cannot be empty");
+        if(poultry_ducks_Value.length()==0)
+            total_Poultry_Ducks_Handler.setError("Cannot be empty");
+        if(othersValue.length()==0)
+            others_EditHandler.setError("Cannot be empty");
+        if(milkProductionValue.length()==0)
+            milk_Production_EditHandler.setError("Cannot be empty");
+        if(wasteValue.length()==0)
+            waste_EditHandler.setError("Cannot be empty");
+        if(shelterValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)typeofshelterSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+
+        if(cowsValue.length()==0||buffalosValue.length()==0||goats_sheep_Value.length()==0||calvesValue.length()==0||bullocksValue.length()==0
+               ||poultry_ducks_Value.length()==0 ||othersValue.length()==0||milkProductionValue.length()==0||wasteValue.length()==0||shelterValue.compareTo("Select Value")==0)
+        {
+            return false;
+        }
+        else
+           return true;
 
     }
 
@@ -123,12 +163,14 @@ public class LiveStockActivity extends AppCompatActivity {
 
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
+/*
 
-                        Toast toast = Toast.makeText(getApplicationContext(),
+                       Toast toast = Toast.makeText(getApplicationContext(),
                                 ServerResponse,
                                 Toast.LENGTH_LONG);
 
                         toast.show();
+*/
 
                         if(ServerResponse.compareTo("0")==0) {
 
@@ -139,10 +181,10 @@ public class LiveStockActivity extends AppCompatActivity {
 
                             if(globalVar.getMenu()==0)
                             {
-                                // Intent i = new Intent(RespondentProfileActivity.this, MigrationStatusActivity.class);
+                                 Intent i = new Intent(LiveStockActivity.this, ProblemsVillageActivity.class);
 
                                 // Starts TargetActivity
-                                //  startActivity(i);
+                                  startActivity(i);
                             }
 
                             else
@@ -163,7 +205,23 @@ public class LiveStockActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(LiveStockActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                     }
                 }) {
             @Override
@@ -223,7 +281,23 @@ public class LiveStockActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(LiveStockActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                         finish();;
                     }
                 }) {
@@ -267,72 +341,26 @@ public class LiveStockActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if(cowsValue.compareTo("NA")==0||cowsValue.compareTo("0")==0)
-        {
-            total_Cows_EditHandler.setText("0");
-        }
-        else
+
             total_Cows_EditHandler.setText(cowsValue);
 
-        if(buffalosValue.compareTo("NA")==0||buffalosValue.compareTo("0")==0)
-        {
-            total_Buffalo_EditHandler.setText("0");
-        }
-        else
             total_Buffalo_EditHandler.setText(buffalosValue);
 
-        if(goats_sheep_Value.compareTo("NA")==0||goats_sheep_Value.compareTo("0")==0)
-        {
-            total_Goat_Sheep_Handler.setText("0");
-        }
-        else
             total_Goat_Sheep_Handler.setText(goats_sheep_Value);
-        if(calvesValue.compareTo("NA")==0||calvesValue.compareTo("0")==0)
-        {
-            total_Calves_EditHandler.setText("0");
-        }
-        else
+
             total_Calves_EditHandler.setText(calvesValue);
 
-        if(bullocksValue.compareTo("NA")==0||bullocksValue.compareTo("0")==0)
-        {
-            total_Bullock_EditHandler.setText("");
-        }
-        else
             total_Bullock_EditHandler.setText(bullocksValue);
-        if(poultry_ducks_Value.compareTo("NA")==0||poultry_ducks_Value.compareTo("0")==0)
-        {
-            total_Poultry_Ducks_Handler.setText("");
-        }
-        else
+
             total_Poultry_Ducks_Handler.setText(poultry_ducks_Value);
 
-        if(othersValue.compareTo("NA")==0||othersValue.compareTo("0")==0)
-        {
-            others_EditHandler.setText("");
-        }
-        else
+
             others_EditHandler.setText(othersValue);
 
-        if(milkProductionValue.compareTo("NA")==0||milkProductionValue.compareTo("0")==0)
-        {
-            milk_Production_EditHandler.setText("");
-        }
-        else
             milk_Production_EditHandler.setText(milkProductionValue);
 
-        if(wasteValue.compareTo("NA")==0||wasteValue.compareTo("0")==0)
-        {
-            waste_EditHandler.setText("");
-        }
-        else
             waste_EditHandler.setText(wasteValue);
-        if(shelterValue.compareTo("NA")==0||shelterValue.compareTo("")==0)
-        {
-            shelterValue="Select Value";
-            typeofshelterSpinnerHandler.setSelection(setSpinnerPos(typeofshelterSpinnerHandler,shelterValue));
-        }
-        else
+
             typeofshelterSpinnerHandler.setSelection(setSpinnerPos(typeofshelterSpinnerHandler,shelterValue));
     }
     int  setSpinnerPos(Spinner spinner,String value)

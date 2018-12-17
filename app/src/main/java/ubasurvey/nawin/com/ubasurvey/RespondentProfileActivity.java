@@ -2,6 +2,9 @@ package ubasurvey.nawin.com.ubasurvey;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -36,11 +40,14 @@ public class RespondentProfileActivity extends AppCompatActivity {
     String ubaid="",respondentNameValue="",respondentAgeValue="",relationshipNameValue="",respondentmobileNoValue="",respondentIdtypeValue="",
             respondent_genderSpinnerValue="",respondentIdnumberValue="";
     String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformthree.php";
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_respondent_profile);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .respondentcoordinatorLayout);
         globalVar=(ChoiceApplication)getApplicationContext();
         ubaid=globalVar.getUbaid();
 
@@ -55,12 +62,12 @@ public class RespondentProfileActivity extends AppCompatActivity {
         respondentprofile_btn_submit_handler = (Button)findViewById(R.id.respondent_btn_submit);
 
         if(globalVar.getMenu()>0) {
-            //selectDatafromDB(globalVar.getUbaid());
+            /*//selectDatafromDB(globalVar.getUbaid());
             Toast toast = Toast.makeText(getApplicationContext(),
                     "Basic info"+globalVar.getJsonString(),
                     Toast.LENGTH_LONG);
 
-            toast.show();
+            toast.show();*/
             setValuetoForm(globalVar.getJsonString());
             respondentprofile_btn_submit_handler.setText("Update");
         }
@@ -94,11 +101,26 @@ public class RespondentProfileActivity extends AppCompatActivity {
         respondentIdtypeValue=respondentidTypeSpinnerHandler.getSelectedItem().toString();
         respondentIdnumberValue=String.valueOf(respondentIdNumberTextHandler.getText());
 
+        if(respondentNameValue.length()==0){
+            respondentNameHandler.setError("Cannot be empty");
+        }
+        if(respondentmobileNoValue.length()==0){
+            respondentmobileNoHandler.setError("Cannot be empty");
+        }
+        if(relationshipNameValue.length()==0){
+            relationshipNameHandler.setError("Cannot be empty");
+        }
 
+        if(respondent_genderSpinnerValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)respondent_genderSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
 
-
-         if(respondent_genderSpinnerValue.compareTo("Yes")==0&& (respondentNameValue.compareTo("")==0&&relationshipNameValue.compareTo("")==0)
-                 || respondentmobileNoValue.compareTo("")==0||respondent_genderSpinnerValue.compareTo("Select Value")==0||respondentIdtypeValue.compareTo("Select Value")==0)
+         if(respondent_genderSpinnerValue.compareTo("Select Value")==0||respondentNameValue.compareTo("")==0||relationshipNameValue.compareTo("")==0
+                 || respondentmobileNoValue.compareTo("")==0)//||respondent_genderSpinnerValue.compareTo("Select Value")==0||respondentIdtypeValue.compareTo("Select Value")==0
             return false;
         else
             return  true;
@@ -119,11 +141,11 @@ public class RespondentProfileActivity extends AppCompatActivity {
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
 
-                        Toast toast = Toast.makeText(getApplicationContext(),
+/*                        Toast toast = Toast.makeText(getApplicationContext(),
                                 ServerResponse,
                                 Toast.LENGTH_LONG);
 
-                        toast.show();
+                        toast.show();*/
                         if(ServerResponse.compareTo("0")==0) {
 
 
@@ -133,7 +155,7 @@ public class RespondentProfileActivity extends AppCompatActivity {
 
                             if(globalVar.getMenu()==0)
                             {
-                                Intent i = new Intent(RespondentProfileActivity.this, MigrationStatusActivity.class);
+                                Intent i = new Intent(RespondentProfileActivity.this, FamilyInfoActivity.class);
 
                                 // Starts TargetActivity
                                 startActivity(i);
@@ -156,7 +178,23 @@ public class RespondentProfileActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(RespondentProfileActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                     }
                 }) {
             @Override

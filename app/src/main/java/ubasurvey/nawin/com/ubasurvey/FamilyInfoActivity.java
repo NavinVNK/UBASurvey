@@ -3,6 +3,9 @@ package ubasurvey.nawin.com.ubasurvey;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -36,7 +39,7 @@ import java.util.Map;
 
 public class FamilyInfoActivity extends AppCompatActivity {
 Button addButton,nextButton;
-TextView famMembers;
+    TextView famMembers;
     private List<FamilyDetails> familyDetailsList = new ArrayList<>();
     private RecyclerView recyclerView;
     ProgressDialog progressDialog;
@@ -45,6 +48,7 @@ TextView famMembers;
     String familyRecord[];
     int positionSeleced;
     String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaselectfamilydetails.php";
+    private CoordinatorLayout coordinatorLayout;
 
     public static interface ClickListener{
         public void onClick(View view,int position);
@@ -124,9 +128,12 @@ TextView famMembers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_family_info);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .familyinfocoordinatorlayout);
         globalVar=(ChoiceApplication)getApplicationContext();
         positionSeleced=-1;
-        setContentView(R.layout.activity_family_info);
+
         recyclerView = (RecyclerView) findViewById(R.id.familyrecycler_view);
 
 
@@ -168,7 +175,11 @@ TextView famMembers;
             public void onClick(View v) {
                 globalVar.resetIncrement();
 
+                Intent i = new Intent(FamilyInfoActivity.this, MigrationStatusActivity.class);
 
+                // Starts TargetActivity
+                startActivity(i);
+                finish();
 
             }
         });
@@ -185,9 +196,8 @@ TextView famMembers;
                 nextButton.setVisibility(View.GONE);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
                 addButton.setLayoutParams(layoutParams);
-                prepareRecordData();
-
-        }
+          }
+        prepareRecordData();
 
     }
     private void prepareRecordData() {
@@ -210,9 +220,7 @@ TextView famMembers;
                         try {
 
                             JSONArray jsonarray = new JSONArray(ServerResponse);
-                          //  JSONArray familycountjsonarray=jsonarray.getJSONArray(0);
 
-                          //  JSONArray familyRecordsjsonarray=jsonarray.getJSONArray(1);
                             globalVar.setFamilyMemCount(jsonarray.length()+1);
                             familyRecord=new String[jsonarray.length()];
 
@@ -242,7 +250,23 @@ TextView famMembers;
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(FamilyInfoActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                     }
                 }) {
             @Override

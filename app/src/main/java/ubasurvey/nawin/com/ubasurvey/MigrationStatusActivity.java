@@ -1,6 +1,10 @@
 package ubasurvey.nawin.com.ubasurvey;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -40,11 +45,14 @@ LinearLayout layoutFamilymigration,layoutDaymonth,layoutYears;
 
     // Storing server url into String variable.
     String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformfour.php";
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_migration_status);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .migrationcoordinatorLayout);
         globalVar=(ChoiceApplication)getApplicationContext();
         ubaid=globalVar.getUbaid();
         progressDialog = new ProgressDialog(MigrationStatusActivity.this);
@@ -53,9 +61,8 @@ LinearLayout layoutFamilymigration,layoutDaymonth,layoutYears;
         layoutDaymonth=(LinearLayout)findViewById(R.id.layoutdaysmonths);
         layoutDaymonth.setVisibility(View.GONE);
         layoutYears=(LinearLayout)findViewById(R.id.layoutyears);
-        familymigratednos_Handler = (EditText)findViewById(R.id.mirgatednumber_edittext);
         layoutYears.setVisibility(View.GONE);
-
+        familymigratednos_Handler = (EditText)findViewById(R.id.mirgatednumber_edittext);
         month_Handler = (EditText)findViewById(R.id.mirgatedmonths_edittext);
         years_Handler=(EditText)findViewById(R.id.mirgatedyears_edittext);
         migration_btn_submit_handler = (Button)findViewById(R.id.mirgrate_btn_submit);
@@ -109,12 +116,12 @@ LinearLayout layoutFamilymigration,layoutDaymonth,layoutYears;
         });
 
         if(globalVar.getMenu()>0) {
-            //selectDatafromDB(globalVar.getUbaid());
+            /*//selectDatafromDB(globalVar.getUbaid());
             Toast toast = Toast.makeText(getApplicationContext(),
                     "Basic info"+globalVar.getJsonString(),
                     Toast.LENGTH_LONG);
 
-            toast.show();
+            toast.show();*/
             setValuetoForm(globalVar.getJsonString());
             migration_btn_submit_handler.setText("Update");
         }
@@ -134,11 +141,11 @@ LinearLayout layoutFamilymigration,layoutDaymonth,layoutYears;
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
 
-                        Toast toast = Toast.makeText(getApplicationContext(),
+/*                        Toast toast = Toast.makeText(getApplicationContext(),
                                 ServerResponse,
                                 Toast.LENGTH_LONG);
 
-                        toast.show();
+                        toast.show();*/
 
                         if(ServerResponse.compareTo("0")==0)
                         {
@@ -149,9 +156,9 @@ LinearLayout layoutFamilymigration,layoutDaymonth,layoutYears;
                         {
                             if(globalVar.getMenu()==0)
                             {
-                                // Intent i = new Intent(MigrationStatusActivity.this, MigrationStatusActivity.class);
+                                Intent i = new Intent(MigrationStatusActivity.this, GovtSchemesActivity.class);
                                 // Starts TargetActivity
-                                // startActivity(i);
+                                 startActivity(i);
 
                             }
                             else
@@ -171,7 +178,23 @@ LinearLayout layoutFamilymigration,layoutDaymonth,layoutYears;
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(MigrationStatusActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                     }
                 }) {
             @Override
@@ -218,10 +241,30 @@ LinearLayout layoutFamilymigration,layoutDaymonth,layoutYears;
             daysmonthValue="NA";
         }
 
+
+
+        if(migrationstatusValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)migrationstatusSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
         if(migrationstatusValue.compareTo("Select Value")==0)
             return false;
-        else if(migrationstatusValue.compareTo("Yes")==0&& (daysmonthValue.compareTo("")==0)|| yearsValue.compareTo("")==0)
+        else if(migrationstatusValue.compareTo("Yes")==0&& (daysmonthValue.compareTo("")==0)|| yearsValue.compareTo("")==0) {
+
+            if(familymigratednosValue.length()==0){
+                familymigratednos_Handler.setError("Cannot be empty");
+            }
+            if(daysmonthValue.length()==0){
+                month_Handler.setError("Cannot be empty");
+            }
+            if(yearsValue.length()==0){
+                years_Handler.setError("Cannot be empty");
+            }
             return false;
+        }
         else
             return  true;
 

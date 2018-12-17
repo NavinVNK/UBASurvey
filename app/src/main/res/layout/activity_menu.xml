@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ubasurvey.nawin.com.ubasurvey.MenuActivity"
-    android:background="#fcfcfc">
+    android:background="@drawable/gradyellow">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -90,10 +90,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="Unnat Bharat Abhiyan is inspired by the vision of transformational change in rural development processes by leveraging knowledge institutions to help build the architecture of an Inclusive India.. "
                             android:layout_marginTop="10dp"
                             android:padding="5dp"
-
-                            android:text="Unnat Bharat Abhiyan is inspired by the vision of transformational change in rural development processes by leveraging knowledge institutions to help build the architecture of an Inclusive India.. "
                             android:textAlignment="gravity"
                             android:textStyle="bold" />
 

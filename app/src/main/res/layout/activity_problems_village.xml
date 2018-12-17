@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/majorprobcoordinatelayout"
     tools:context="ubasurvey.nawin.com.ubasurvey.HouseholdActivity"
-    android:background="#cc0000">
+    android:background="@drawable/majorprobbg">
 
 
     <android.support.v4.widget.NestedScrollView
@@ -56,7 +57,7 @@
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
                             android:gravity="center"
-                            android:text="Major Problems in Village (Top3)"
+                            android:text="13.Major Problems in Village (Top3)"
                             android:textSize="24dip"
                             android:textStyle="bold" />
                         <!-- <View
@@ -116,7 +117,8 @@
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
                             android:inputType="textMultiLine"
-                            android:hint="Enter problems in village"/>
+                            android:text="None"
+                            android:hint="Enter problems in village( Max 100 characters)"/>
                         </android.support.design.widget.TextInputLayout>
 
 
@@ -170,7 +172,8 @@
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
                             android:inputType="textMultiLine"
-                            android:hint="Enter Solutions for Problem 1"/>
+                            android:text="None"
+                            android:hint="Enter Solutions for Problem 1 ( Max 100 characters)"/>
                         </android.support.design.widget.TextInputLayout>
 
                     </LinearLayout>
@@ -222,7 +225,8 @@
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
                             android:inputType="textMultiLine"
-                            android:hint="Enter Problems in Vilage"/>
+                            android:text="None"
+                            android:hint="Enter Problems in Vilage ( Max 100 characters)"/>
                         </android.support.design.widget.TextInputLayout>
 
                     </LinearLayout>
@@ -274,7 +278,8 @@
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
                             android:inputType="textMultiLine"
-                            android:hint="Enter Solutions for Problem2"/>
+                            android:text="None"
+                            android:hint="Enter Solutions for Problem2 ( Max 100 characters)"/>
 
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
@@ -325,8 +330,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
+                            android:text="None"
                             android:inputType="textMultiLine"
-                            android:hint="Enter Problems  in village"/>
+                            android:hint="Enter Problems  in village ( Max 100 characters)"/>
                         </android.support.design.widget.TextInputLayout>
 
                     </LinearLayout>
@@ -379,7 +385,8 @@
                             android:layout_height="wrap_content"
                             android:textAlignment="center"
                             android:inputType="textMultiLine"
-                            android:hint="Enter sSolution for problem 3"/>
+                            android:text="None"
+                            android:hint="Enter sSolution for problem 3 ( Max 100 characters)"/>
                         </android.support.design.widget.TextInputLayout>
 
                     </LinearLayout>

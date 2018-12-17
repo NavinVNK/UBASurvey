@@ -8,6 +8,29 @@ public class ChoiceApplication extends Application {
     int menu;
     String ubaid;
     String jsonString;
+    String familyjsonString;
+    Integer familyMemCount;
+    String volunteerID;
+    Integer electricalappCount;
+
+    public Integer getElectricalappCount() {
+        return electricalappCount;
+    }
+
+    public void setElectricalappCount(Integer electricalappCount) {
+        this.electricalappCount = electricalappCount;
+    }
+
+
+    public String getVolunteerID() {
+        return volunteerID;
+    }
+
+    public void setVolunteerID(String volunteerID) {
+        this.volunteerID = volunteerID;
+    }
+
+
 
     public String getFamilyjsonString() {
         return familyjsonString;
@@ -17,10 +40,7 @@ public class ChoiceApplication extends Application {
         this.familyjsonString = familyjsonString;
     }
 
-    String familyjsonString;
 
-
-    Integer familyMemCount;
 
 
 
@@ -42,6 +62,12 @@ public class ChoiceApplication extends Application {
     public void resetIncrement() {
         this.familyMemCount=1;
     }
+    public void setElectIncrement() {
+        this.electricalappCount++;
+    }
+    public void resetElectIncrement() {
+        this.electricalappCount=1;
+    }
 
     public void setUbaid(String ubaid) {
         this.ubaid = ubaid;
@@ -52,6 +78,7 @@ public class ChoiceApplication extends Application {
     public void onCreate() {
         super.onCreate();
         familyMemCount=1;
+        electricalappCount=1;
 
     }
 

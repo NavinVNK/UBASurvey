@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/respondentcoordinatorLayout"
     tools:context="ubasurvey.nawin.com.ubasurvey.RespondentProfileActivity"
-    android:background="#000080">
+    android:background="@drawable/respondentbg">
 
 
 
@@ -52,7 +53,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="15dp"
-                            android:text="Respondent’s Profile"
+                            android:text="3.Respondent’s Profile"
                             android:textStyle="bold"
                             android:gravity="center"
                             android:textSize="24dip"/>

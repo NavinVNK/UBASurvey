@@ -39,7 +39,7 @@
                 android:textAlignment="viewStart"
 
                  android:layout_weight="1"
-                android:text="UBID :"
+                android:text="UBAID :"
                 android:textColor="#cc0066" />
 
             <TextView

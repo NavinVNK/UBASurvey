@@ -3,14 +3,17 @@ package ubasurvey.nawin.com.ubasurvey;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -41,13 +44,14 @@ import java.util.List;
 import java.util.Map;
 
 public class SelectRecordActivity extends AppCompatActivity implements RecordAdapter.RecordsAdapterListener{
-
+    private  TextView emptyView;
     private SearchView searchView;
     private List<Record> RecordList = new ArrayList<>();
     private RecyclerView recyclerView;
     private RecordAdapter mAdapter;
     ChoiceApplication globalVar;
     private LinearLayout linearLayout;
+    String searchString="";
 
     public static interface ClickListener{
         public void onClick(View view,int position);
@@ -106,6 +110,8 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
 
     String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaselectrecords.php";
     String HttpSelectUrl1 = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+    String HttpDeleteUrl="http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubadeleterecord.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,8 +124,9 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
         // toolbar fancy stuff
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.toolbar_title);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        emptyView = (TextView) findViewById(R.id.empty_view);
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this,
                 recyclerView, new ClickListener() {
             @Override
@@ -134,8 +141,50 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
 
             @Override
             public void onLongClick(View view, int position) {
-                Toast.makeText(SelectRecordActivity.this, "Long press on position :"+position,
-                        Toast.LENGTH_LONG).show();
+/*                if(globalVar.getVolunteerID().compareTo("admin")==0)
+                {
+                    Record record=mAdapter.getRecordListFiltered().get(position);
+                    Toast.makeText(getApplicationContext(), "Delected: " + record.getTitle() + ", " + record.getGenre(), Toast.LENGTH_LONG).show();
+                    globalVar.setUbaid(record.getTitle());
+                    deleteDatafromDB(record.getTitle());
+
+                }*/
+                if (globalVar.getVolunteerID().compareTo("admin") == 0) {
+                    final Record record = mAdapter.getRecordListFiltered().get(position);
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SelectRecordActivity.this);
+                    // Setting Alert Dialog Title
+                    alertDialogBuilder.setTitle("Delete Record");
+                    // Icon Of Alert Dialog
+                    alertDialogBuilder.setIcon(R.drawable.uba);
+                    // Setting Alert Dialog Message
+                    alertDialogBuilder.setMessage("Do you want to delete record with UBAID :"+record.getTitle()+ " With HouseHeadName :"+record.getGenre());
+                    // alertDialogBuilder.setCancelable(false);
+                    alertDialogBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int arg1) {
+
+                            //Toast.makeText(getApplicationContext(), "Delected: " + record.getTitle() + ", " + record.getGenre(), Toast.LENGTH_LONG).show();
+                            globalVar.setUbaid(record.getTitle());
+                            deleteDatafromDB(record.getTitle());
+                            dialog.cancel();
+                        }
+                    });
+
+                    alertDialogBuilder.setNegativeButton(
+                            "No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    //Setting the title manually
+                    alertDialog.show();
+
+
+                }
             }
         }));
         // white background notification bar
@@ -161,38 +210,46 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
 
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator()); recyclerView.setAdapter(mAdapter); recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new MyDividerItemDecoration(this, DividerItemDecoration.VERTICAL, 36));
         progressDialog = new ProgressDialog(SelectRecordActivity.this);
         prepareRecordData();
     }
     private void prepareRecordData() {
 
-
+      RecordList.clear();
         progressDialog.setMessage("Loading Records...");
         progressDialog.show();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 HttpSelectUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
                 progressDialog.dismiss();
-                try {
 
-                    JSONArray jsonarray = new JSONArray(response);
-                    for (int i = 0; i < jsonarray.length(); i++) {
-                        JSONObject jsonobject = jsonarray.getJSONObject(i);
-                        String ubaid = jsonobject.getString("ubaid");
-                        String nameofHead = jsonobject.getString("nameofthehead");
-                        String gramPanchayat = jsonobject.getString("grampanchayat");
-                        Record Record = new Record(ubaid, nameofHead, gramPanchayat);
-                        RecordList.add(Record);
+                    try {
+
+                        JSONArray jsonarray = new JSONArray(response);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        emptyView.setVisibility(View.GONE);
+                        for (int i = 0; i < jsonarray.length(); i++) {
+                            JSONObject jsonobject = jsonarray.getJSONObject(i);
+                            String ubaid = jsonobject.getString("ubaid");
+                            String nameofHead = jsonobject.getString("nameofthehead");
+                            String gramPanchayat = jsonobject.getString("grampanchayat");
+                            Record record = new Record(ubaid, nameofHead, gramPanchayat);
+                            RecordList.add(record);
+                        }
+                        //mAdapter.notifyDataSetChanged();
+                        mAdapter.getFilter().filter(searchString);
+
+
+                    } catch (JSONException e) {
+                        recyclerView.setVisibility(View.GONE);
+                        emptyView.setVisibility(View.VISIBLE);
+                        e.printStackTrace();
                     }
-                    mAdapter.notifyDataSetChanged();
 
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
 
 
@@ -220,7 +277,21 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
                 snackbar.show();
 
             }
-        });
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<String, String>();
+
+                // Adding All values to Params.
+                params.put("username", globalVar.getVolunteerID());
+
+                return params;
+            }
+
+        };
+
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
@@ -245,6 +316,7 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
             public boolean onQueryTextSubmit(String query) {
                 // filter recycler view when query submitted
              // Toast.makeText(SelectRecordActivity.this, "Error" + query, Toast.LENGTH_SHORT).show();
+                searchString=query;
                 mAdapter.getFilter().filter(query);
                 return false;
             }
@@ -253,7 +325,9 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
             public boolean onQueryTextChange(String query) {
                 // filter recycler view when text is changed
                // Toast.makeText(SelectRecordActivity.this,  query, Toast.LENGTH_SHORT).show();
+
                       mAdapter.getFilter().filter(query);
+                     searchString=query;
 
                 return false;
             }
@@ -272,6 +346,7 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
         if (id == R.id.action_search) {
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -303,7 +378,7 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
     void  selectDatafromDB(final String ubaidlocal)
     {
         // Showing progress dialog at user registration time.
-        progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
+        progressDialog.setMessage("Please Wait, We are fetching data from Server");
         progressDialog.show();
         // Creating string request with post method.
         StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpSelectUrl1,
@@ -360,4 +435,74 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
         requestQueue.add(stringRequest);
 
     }
+
+    void  deleteDatafromDB(final String ubaidlocal)
+    {
+        // Showing progress dialog at user registration time.
+        progressDialog.setMessage("Please Wait, We are Deleting your Data on Server");
+        progressDialog.show();
+        // Creating string request with post method.
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpDeleteUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String ServerResponse) {
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+                        //code to globar var
+                        //setValuetoForm(ServerResponse);
+                        //globalVar.setJsonString(ServerResponse);
+
+                        prepareRecordData();
+
+
+                     /*   Toast toast = Toast.makeText(getApplicationContext(),
+                                "Menu "+globalVar.getJsonString(),
+                                Toast.LENGTH_LONG);
+
+                        toast.show();*/
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+                        globalVar.setJsonString("");
+
+                        // Showing error message if something goes wrong.
+                        Toast.makeText(SelectRecordActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        //finish();;
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<String, String>();
+
+                // Adding All values to Params.
+                params.put("ubaid", ubaidlocal);
+
+                return params;
+            }
+
+        };
+
+        // Creating RequestQueue.
+        RequestQueue requestQueue = Volley.newRequestQueue(SelectRecordActivity.this);
+
+        // Adding the StringRequest object into requestQueue.
+        requestQueue.add(stringRequest);
+
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+
 }

@@ -97,9 +97,9 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
 
     Double latitute,longitute;
 
-    String ubaid,householdIDValue,villageSpinnerValue, districtSpinnerValue,blockSpinnerValue,wardNoSpinnerValue,streetValue,gramPanchayatSpinnerValue, stateSpinnerValue,villageCode,districtCode,blockCode,latitudeValue,longitutevalue;
-    Spinner villageSpinnerHandler, districtSpinnerHandler,blockSpinnerHandler,wardNoSpinnerHandler,gramPanchayatSpinnerHandler, stateSpinnerHandler;
-    EditText householdIDEditTextHandler,streetEdithandler;
+    String ubaid,username,household_headNameValue,genderValue,householdIDValue,villageSpinnerValue, districtSpinnerValue,blockSpinnerValue,wardNoSpinnerValue,streetValue,gramPanchayatSpinnerValue, stateSpinnerValue,villageCode,districtCode,blockCode,latitudeValue,longitutevalue;
+    Spinner villageSpinnerHandler, districtSpinnerHandler,genderSpinnerHandler,blockSpinnerHandler,wardNoSpinnerHandler,gramPanchayatSpinnerHandler, stateSpinnerHandler;
+    EditText household_headNameValue_handler,householdIDEditTextHandler,streetEdithandler;
 
 
     ArrayAdapter<CharSequence> panchayat1_adapter;
@@ -114,14 +114,32 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
         setContentView(R.layout.activity_basic_info);
         progressDialog = new ProgressDialog(BasicinfoActivity.this);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
-                .coordinatorLayout);
+                .basiccoordinatorLayout);
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         boolean enabled = service
                 .isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!enabled) {
+            Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, "Enable GPS", Snackbar.LENGTH_LONG)
+                    .setAction("Start Again", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                        }
+                    });
+
+            // Changing message text color
+            snackbar.setActionTextColor(Color.RED);
+
+            // Changing action button text color
+            View sbView = snackbar.getView();
+            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
+
+            snackbar.show();
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
+            finish();
         }
 
 
@@ -168,10 +186,13 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
         blockSpinnerHandler = findViewById(R.id.BlockSpinner);
         gramPanchayatSpinnerHandler = findViewById(R.id.grampanachayatspinner);
         wardNoSpinnerHandler = findViewById(R.id.wardNoSpinner);
+        genderSpinnerHandler=findViewById(R.id.spinner_Gender);
         villageName =(TextView) findViewById(R.id.villagename);
+        household_headNameValue_handler = findViewById(R.id.household_HeadName);
         householdIDEditTextHandler = (EditText)findViewById(R.id.householdID);
         streetEdithandler=(EditText)findViewById(R.id.street);
         globalVar=(ChoiceApplication)getApplicationContext();
+        username=globalVar.getVolunteerID();
          panchayat1_adapter =ArrayAdapter.createFromResource(this, R.array.GramPanachayat_option,
                 android.R.layout.simple_spinner_item);
 
@@ -278,20 +299,59 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
         districtCode="KPM";//DistrictHashMap.get(districtSpinnerValue);
         blockCode=blockHashMap.get(blockSpinnerValue);
         streetValue=String.valueOf(streetEdithandler.getText());
+        household_headNameValue = String.valueOf(household_headNameValue_handler.getText());
+
+        genderValue = genderSpinnerHandler.getSelectedItem().toString();
         householdIDValue=String.valueOf(householdIDEditTextHandler.getText());
         ubaid=stateSpinnerValue+districtCode+blockCode+villageCode+wardNoSpinnerValue+householdIDValue;
-        if(latitute.equals(null)||longitute.equals(null)) {
+        try {
+            latitudeValue = latitute.toString();
+            longitutevalue = longitute.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
             latitudeValue = "0.0";
             longitutevalue = "0.0";
         }
-        else
-        {
-            latitudeValue=latitute.toString();
-            longitutevalue=longitute.toString();
+
+        if(household_headNameValue.length()==0){
+            household_headNameValue_handler.setError("Cannot be empty");
+        }
+        if(householdIDValue.length()==0){
+            householdIDEditTextHandler.setError("Cannot be empty");
         }
 
 
-        if(villageSpinnerValue.compareTo("Select Value")==0||blockSpinnerValue.compareTo("Select Value")==0 ||wardNoSpinnerValue.compareTo("Select Value")==0||gramPanchayatSpinnerValue.compareTo("Select Value")==0||streetValue.compareTo("")==0||householdIDValue.compareTo("")==0)
+        if(blockSpinnerValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)blockSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(wardNoSpinnerValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)wardNoSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(gramPanchayatSpinnerValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)gramPanchayatSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(genderValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)genderSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+
+
+        if(villageSpinnerValue.compareTo("Select Value")==0||blockSpinnerValue.compareTo("Select Value")==0 ||wardNoSpinnerValue.compareTo("Select Value")==0||gramPanchayatSpinnerValue.compareTo("Select Value")==0||genderValue.compareTo("Select Value")==0||streetValue.compareTo("")==0||householdIDValue.compareTo("")==0||household_headNameValue.compareTo("")==0)
             return false;
         else
              return true;
@@ -325,6 +385,7 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
                        editor.commit();
                        Intent i = new Intent(BasicinfoActivity.this, HouseholdActivity.class);
                        i.putExtra("houseid",householdIDValue);
+                       i.putExtra("househeadname",household_headNameValue);
                        startActivity(i);
                        finish();
                    }
@@ -371,9 +432,12 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
                params.put("block", blockSpinnerValue);
                params.put("district", districtSpinnerValue);
                params.put("state", stateSpinnerValue);
+               params.put("nameofthehead",household_headNameValue);
+               params.put("gender", genderValue);
                params.put("householdid",householdIDValue);
                params.put("latitude",latitudeValue);
                params.put("longitude",longitutevalue);
+               params.put("username",username);
 
                return params;
            }
@@ -401,6 +465,11 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
 
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
+/*                        Toast toast = Toast.makeText(getApplicationContext(),
+                                ServerResponse,
+                                Toast.LENGTH_LONG);
+
+                        toast.show();*/
 
                         globalVar.setUbaid(ubaid);
 
@@ -462,6 +531,8 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
                 params.put("block", blockSpinnerValue);
                 params.put("district", districtSpinnerValue);
                 params.put("state", stateSpinnerValue);
+                params.put("nameofthehead",household_headNameValue);
+                params.put("gender", genderValue);
                 params.put("householdid",householdIDValue);
 
                 return params;
@@ -491,6 +562,14 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
             gramPanchayatSpinnerValue = jobj.getString("grampanchayat");
             streetValue=jobj.getString("street");
             stateSpinnerValue =jobj.getString("state");
+           household_headNameValue=jobj.getString("nameofthehead");
+           if(household_headNameValue.compareTo("null")==0)
+               household_headNameValue = "";
+           else
+               household_headNameValue_handler.setText(household_headNameValue);
+           genderValue = jobj.getString("gender");
+           if(genderValue.compareTo("null")==0)
+               genderValue= "Select Value";
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -515,6 +594,7 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
                "setVlue " +gramPanchayatSpinnerValue,
                 Toast.LENGTH_LONG);
         toast.show();*/
+        genderSpinnerHandler.setSelection(setSpinnerPos(genderSpinnerHandler,genderValue));
         gramPanchayatSpinnerHandler.setSelection(setSpinnerPos(gramPanchayatSpinnerHandler,gramPanchayatSpinnerValue),true);
          wardNoSpinnerHandler.setSelection(setSpinnerPos(wardNoSpinnerHandler,wardNoSpinnerValue));
 //        gramPanchayatSpinnerHandler.post(new Runnable() {
@@ -627,6 +707,8 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
             locationTv.setText("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
             latitute=location.getLatitude();
             longitute=location.getLongitude();
+            latitudeValue=latitute.toString();
+            longitutevalue=longitute.toString();
         }
 
         startLocationUpdates();
@@ -660,6 +742,10 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
     public void onLocationChanged(Location location) {
         if (location != null) {
             locationTv.setText("Latitude : " + location.getLatitude() + "\nLongitude : " + location.getLongitude());
+            latitute=location.getLatitude();
+            longitute=location.getLongitude();
+            latitudeValue=latitute.toString();
+            longitutevalue=longitute.toString();
         }
     }
 

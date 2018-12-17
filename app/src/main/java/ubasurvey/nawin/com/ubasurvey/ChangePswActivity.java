@@ -2,13 +2,17 @@ package ubasurvey.nawin.com.ubasurvey;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,9 +31,9 @@ public class ChangePswActivity extends AppCompatActivity {
 
 
     // Creating EditText.
-    EditText OldPassword, NewPassword, Email ;
+    EditText OldPassword, NewPassword ;
 
-
+TextView  Email;
     // Creating button;
     Button InsertButton;
 
@@ -45,19 +49,20 @@ public class ChangePswActivity extends AppCompatActivity {
 
     // Storing server url into String variable.
     String HttpUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/changepsw.php";
+    private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_psw);
-
+        relativeLayout=(RelativeLayout)findViewById(R.id.pswrelativelayout);
         // Assigning ID's to EditText.
         OldPassword = (EditText) findViewById(R.id.oldpsw);
         NewPassword = (EditText) findViewById(R.id.newpsw);
-        Email = (EditText) findViewById(R.id.username);
+        Email = (TextView) findViewById(R.id.username);
         Bundle bundle = getIntent().getExtras();
         userName=bundle.getString("value1");
-        Email.setText(userName);
+        Email.setText("User Nmae : "+userName);
 
         // Assigning ID's to Button.
         InsertButton = (Button) findViewById(R.id.btn_change);
@@ -74,19 +79,21 @@ public class ChangePswActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(TextUtils.isEmpty(OldPassword.getText()) )
                 {
+
                     YoYo.with(Techniques.Bounce)
                             .duration(700)
                             .playOn(findViewById(R.id.oldpsw));   
                 }
                 if(TextUtils.isEmpty(NewPassword.getText()) )
                 {
+
                     YoYo.with(Techniques.Bounce)
                             .duration(700)
                             .playOn(findViewById(R.id.newpsw));
                 }
 
                 // Showing progress dialog at user registration time.
-                progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
+                progressDialog.setMessage("Please Wait, We are validating your password on Server");
                 progressDialog.show();
 
                 // Calling method to get value from EditText.
@@ -117,7 +124,23 @@ public class ChangePswActivity extends AppCompatActivity {
                                 progressDialog.dismiss();
 
                                 // Showing error message if something goes wrong.
-                                Toast.makeText(ChangePswActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                                Snackbar snackbar = Snackbar
+                                        .make(relativeLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                        .setAction("RETRY", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                            }
+                                        });
+
+                                // Changing message text color
+                                snackbar.setActionTextColor(Color.RED);
+
+                                // Changing action button text color
+                                View sbView = snackbar.getView();
+                                TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(Color.YELLOW);
+
+                                snackbar.show();
                             }
                         }) {
                     @Override

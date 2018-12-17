@@ -315,10 +315,30 @@
     <!-- LiveStock  -->
     <string name="sheltertype_prompt">Select</string>
     <string-array name="shelterType">
-        <item>Select Value</item>
+        <item>None</item>
         <item>Pucca</item>
         <item>Kutch</item>
         <item>Open</item>
+    </string-array>
+
+    <string name="lighting_prompt">Select</string>
+    <string-array name="lightingType">
+        <item>Select Value</item>
+        <item> Electricity </item>
+        <item>Solar Power</item>
+        <item>Kerosene</item>
+    </string-array>
+
+    <string name="electrical_prompt">Select</string>
+    <string-array name="electrical_option">
+        <item>Select Value</item>
+        <item> TV </item>
+        <item>Fridge</item>
+        <item>WashingMachine</item>
+        <item>AC </item>
+        <item>MotorPump</item>
+        <item>InductionStove </item>
+        <item>Others </item>
     </string-array>
 
 </resources>

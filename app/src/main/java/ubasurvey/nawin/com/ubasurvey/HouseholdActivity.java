@@ -2,6 +2,9 @@ package ubasurvey.nawin.com.ubasurvey;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,22 +39,26 @@ public class HouseholdActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     ChoiceApplication globalVar;
     Button household_btn_submit_handler;
-    TextView householdID_Handler;
-    EditText  household_headNameValue_handler,annualIncome_Handler;
-    Spinner typeofhouseSpinnerHandler,genderSpinnerHandler,categorySpinnerHandler,poverty_statusSpinnerHandler,ownhouseSpinnerHandler
+    TextView householdID_Handler,household_headNameValue_handler;
+    EditText  annualIncome_Handler;
+    Spinner typeofhouseSpinnerHandler,categorySpinnerHandler,poverty_statusSpinnerHandler,ownhouseSpinnerHandler
             ,toilet_column1SpinnerHandler,drainage_column1SpinnerHandler,waste_DoorStepSpinnerHandler,compostSpinnerHandler,biogasSpinnerHandler;
 
-    String ubaid,householdID,household_headNameValue,genderValue,categoryValue,povertyStatusValue,ownHouseValue,typeHouseValue,toiletValue;
+    String ubaid,householdID,household_headNameValue,categoryValue,povertyStatusValue,ownHouseValue,typeHouseValue,toiletValue;
     String drainageValue,wastageValue,compostValue,biogasValue,annualIncomeValue;
 
     // Storing server url into String variable.
     String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformtwo.php";
     String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+    private CoordinatorLayout coordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_household);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .householdcoordinatorLayout);
         Bundle bundle = getIntent().getExtras();
         progressDialog = new ProgressDialog(HouseholdActivity.this);
         globalVar=(ChoiceApplication)getApplicationContext();
@@ -59,7 +66,7 @@ public class HouseholdActivity extends AppCompatActivity {
 
         householdID_Handler = (TextView)findViewById(R.id.householdID);
 
-        household_headNameValue_handler = findViewById(R.id.household_HeadName);
+        household_headNameValue_handler = (TextView)findViewById(R.id.household_HeadName);
         annualIncome_Handler = findViewById(R.id.annualIncome);
        
         categorySpinnerHandler = (Spinner)findViewById(R.id.spinner_category);
@@ -74,7 +81,7 @@ public class HouseholdActivity extends AppCompatActivity {
         biogasSpinnerHandler = findViewById(R.id.spinner_biogas_column1);
        
         typeofhouseSpinnerHandler=findViewById(R.id.typeofhouseSpinner);
-        genderSpinnerHandler=findViewById(R.id.spinner_Gender);
+        //genderSpinnerHandler=findViewById(R.id.spinner_Gender);
 
         household_btn_submit_handler = findViewById(R.id.household_btn_submit);
         if(globalVar.getMenu()>0) {
@@ -87,8 +94,10 @@ public class HouseholdActivity extends AppCompatActivity {
             setValuetoForm(globalVar.getJsonString());
             household_btn_submit_handler.setText("Update");
         }
-        else
+        else {
             householdID_Handler.setText(bundle.getString("houseid"));
+            household_headNameValue_handler.setText(bundle.getString("househeadname"));
+        }
 
         household_btn_submit_handler.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +124,7 @@ public class HouseholdActivity extends AppCompatActivity {
        // householdID = String.valueOf(householdID_Handler.getText());
         household_headNameValue = String.valueOf(household_headNameValue_handler.getText());
 
-        genderValue = genderSpinnerHandler.getSelectedItem().toString();
+       // genderValue = genderSpinnerHandler.getSelectedItem().toString();
         categoryValue=categorySpinnerHandler.getSelectedItem().toString();
         povertyStatusValue = poverty_statusSpinnerHandler.getSelectedItem().toString();
         ownHouseValue = ownhouseSpinnerHandler.getSelectedItem().toString();
@@ -127,9 +136,78 @@ public class HouseholdActivity extends AppCompatActivity {
         biogasValue = biogasSpinnerHandler.getSelectedItem().toString();
         annualIncomeValue = String.valueOf(annualIncome_Handler.getText());
 
-        if(typeHouseValue.compareTo("Select Value")==0||genderValue.compareTo("Select Value")==0||categoryValue.compareTo("Select Value")==0||
+        if(annualIncomeValue.length()==0){
+            annualIncome_Handler.setError("Cannot be empty");
+        }
+
+
+/*        if(genderValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)genderSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }*/
+        if(categoryValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)categorySpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(typeHouseValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)typeofhouseSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(toiletValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)toilet_column1SpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(wastageValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)waste_DoorStepSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(povertyStatusValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)poverty_statusSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(ownHouseValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)ownhouseSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(compostValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)compostSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(biogasValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)biogasSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }   
+
+        if(typeHouseValue.compareTo("Select Value")==0||categoryValue.compareTo("Select Value")==0||
                 toiletValue.compareTo("Select Value")==0||wastageValue.compareTo("Select Value")==0||annualIncomeValue.compareTo("")==0
-                ||povertyStatusValue.compareTo("Select Value")==0||ownHouseValue.compareTo("Select Value")==0
+                ||household_headNameValue.compareTo("")==0||povertyStatusValue.compareTo("Select Value")==0||ownHouseValue.compareTo("Select Value")==0
                 ||compostValue.compareTo("Select Value")==0||biogasValue.compareTo("Select Value")==0)
             return false;
         else
@@ -164,10 +242,10 @@ public class HouseholdActivity extends AppCompatActivity {
 
                             if(globalVar.getMenu()==0)
                             {
-                               // Intent i = new Intent(RespondentProfileActivity.this, MigrationStatusActivity.class);
+                                Intent i = new Intent(HouseholdActivity.this, RespondentProfileActivity.class);
 
                                 // Starts TargetActivity
-                              //  startActivity(i);
+                                startActivity(i);
                             }
 
                             else
@@ -199,8 +277,8 @@ public class HouseholdActivity extends AppCompatActivity {
 
                 // Adding All values to Params.
                 params.put("ubaid", ubaid);
-                params.put("nameofthehead",household_headNameValue);
-                params.put("gender", genderValue);
+
+
                 params.put("category", categoryValue);
                 params.put("povertystatus", povertyStatusValue);
                 params.put("ownhouse", ownHouseValue);
@@ -252,7 +330,23 @@ public class HouseholdActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        //Toast.makeText(HouseholdActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                         finish();;
                     }
                 }) {
@@ -288,9 +382,7 @@ public class HouseholdActivity extends AppCompatActivity {
             household_headNameValue=jobj.getString("nameofthehead");
             if(household_headNameValue.compareTo("null")==0)
                 household_headNameValue = "";
-            genderValue = jobj.getString("gender");
-            if(genderValue.compareTo("null")==0)
-                genderValue= "Select Value";
+
             categoryValue = jobj.getString("category");
             if(categoryValue.compareTo("null")==0)
                     categoryValue = "Select Value";
@@ -328,7 +420,7 @@ public class HouseholdActivity extends AppCompatActivity {
         }
 
         typeofhouseSpinnerHandler.setSelection(setSpinnerPos(typeofhouseSpinnerHandler,typeHouseValue));
-        genderSpinnerHandler.setSelection(setSpinnerPos(genderSpinnerHandler,genderValue));
+
         categorySpinnerHandler.setSelection(setSpinnerPos(categorySpinnerHandler,categoryValue));
         poverty_statusSpinnerHandler.setSelection(setSpinnerPos(poverty_statusSpinnerHandler,povertyStatusValue));
         ownhouseSpinnerHandler.setSelection(setSpinnerPos(ownhouseSpinnerHandler,ownHouseValue));

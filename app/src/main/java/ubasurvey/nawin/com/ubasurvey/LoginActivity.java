@@ -3,7 +3,9 @@ package ubasurvey.nawin.com.ubasurvey;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
@@ -13,6 +15,7 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,19 +33,14 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private int request_Code = 1;
-
+    ChoiceApplication globalVar;
     TextView location ;
-
     // Creating EditText.
     EditText FirstName, LastName, Email ;
-
-
     // Creating button;
     Button InsertButton;
-
     // Creating Volley RequestQueue.
     RequestQueue requestQueue;
-
     // Create string variable to hold the EditText Value.
     String FirstNameHolder, LastNameHolder, EmailHolder ;
 
@@ -51,12 +49,14 @@ public class LoginActivity extends AppCompatActivity {
 
     // Storing server url into String variable.
     String HttpUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/checklogin.php";
+    private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        relativeLayout=(RelativeLayout)findViewById(R.id.loginrelativelayout);
+        globalVar=(ChoiceApplication)getApplicationContext();
         // Assigning ID's to EditText.
         FirstName = (EditText) findViewById(R.id.input_email);
         LastName = (EditText) findViewById(R.id.input_password);
@@ -80,7 +80,9 @@ public class LoginActivity extends AppCompatActivity {
                     startActivityForResult(i, request_Code);
                 }
                 else
-                    Toast.makeText(LoginActivity.this, "User Name Empty", Toast.LENGTH_LONG).show();
+                if(FirstName.getText().length()==0){
+                    FirstName.setError("Cannot be empty");
+                }
 
             }
         };
@@ -121,11 +123,12 @@ public class LoginActivity extends AppCompatActivity {
 
                                 // Showing response message coming from server.
                                 if(ServerResponse.compareTo("success")==0) {
+                                    globalVar.setVolunteerID(FirstNameHolder);
                                     startActivity(new Intent(LoginActivity.this, MenuActivity.class));
                                     finish();
                                 }
                                 else
-                                    Toast.makeText(LoginActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(LoginActivity.this, "Login Failure", Toast.LENGTH_LONG).show();
                                 //if(ServerResponse.compareTo("1")==0)
                                 //
                                 // else
@@ -141,7 +144,23 @@ public class LoginActivity extends AppCompatActivity {
                                 progressDialog.dismiss();
 
                                 // Showing error message if something goes wrong.
-                                Toast.makeText(LoginActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                                Snackbar snackbar = Snackbar
+                                        .make(relativeLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                        .setAction("RETRY", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                            }
+                                        });
+
+                                // Changing message text color
+                                snackbar.setActionTextColor(Color.RED);
+
+                                // Changing action button text color
+                                View sbView = snackbar.getView();
+                                TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                                textView.setTextColor(Color.YELLOW);
+
+                                snackbar.show();
                             }
                         }) {
                     @Override

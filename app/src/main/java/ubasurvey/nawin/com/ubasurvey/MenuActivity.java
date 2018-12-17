@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,7 @@ public class MenuActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     ImageView insert,update,select,delete;
     ChoiceApplication globalObject;
+     CollapsingToolbarLayout collapsingToolbarLayout;
     SharedPreferences prefs;
     static final String KEY="ubaid";
 
@@ -38,9 +40,12 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        collapsingToolbarLayout=(CollapsingToolbarLayout)findViewById(R.id.collapsingtoolbar);
+
         progressDialog = new ProgressDialog(MenuActivity.this);
         prefs = getSharedPreferences("lastrecord",MODE_PRIVATE);
         globalObject=(ChoiceApplication)getApplicationContext();
+        collapsingToolbarLayout.setTitle("UBA Survey :  "+globalObject.getVolunteerID()+"  Logged in");
         Log.d("Share",prefs.getString(KEY,"no value saved"));
         insert=(ImageView)findViewById(R.id.insertimg);
         insert.setOnClickListener(new View.OnClickListener() {

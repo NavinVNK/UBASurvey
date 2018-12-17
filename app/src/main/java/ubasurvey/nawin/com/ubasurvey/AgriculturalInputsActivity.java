@@ -1,7 +1,11 @@
 package ubasurvey.nawin.com.ubasurvey;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -9,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -40,10 +45,14 @@ public class AgriculturalInputsActivity extends AppCompatActivity {
     // Storing server url into String variable.
     String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformnine.php";
     String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+    private CoordinatorLayout coordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agricultural_inputs);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .agricoordinatelayout);
         progressDialog = new ProgressDialog(AgriculturalInputsActivity.this);
         chemicalFertilisersAcre_Handler = findViewById(R.id.chemical_fertilisers_text);
         chemicalInsecticidesAcre_Handler = findViewById(R.id.chemical_insecticides_text);
@@ -166,27 +175,52 @@ public class AgriculturalInputsActivity extends AppCompatActivity {
         //String ubaid, chemicalfertilisersValue,chemicalinsecticidesValue,chemicalweedicidesValue,organicmanuresValue,modeofIrrigationValue,systemofIrrigationValue;
 
 
-        if(chemicalfertilisersSwitch_Handler.isChecked())
-              chemicalfertilisersValue = String.valueOf(chemicalFertilisersAcre_Handler.getText());
+        if(chemicalfertilisersSwitch_Handler.isChecked()) {
+            chemicalfertilisersValue = String.valueOf(chemicalFertilisersAcre_Handler.getText());
+            if(chemicalfertilisersValue.length()==0)
+                chemicalFertilisersAcre_Handler.setError("Cannot be empty");
+        }
         else
             chemicalfertilisersValue = "0";
-        if(chemicalInsecticidesSwitch_Handler.isChecked())
-               chemicalinsecticidesValue = String.valueOf(chemicalInsecticidesAcre_Handler.getText());
+        if(chemicalInsecticidesSwitch_Handler.isChecked()) {
+            chemicalinsecticidesValue = String.valueOf(chemicalInsecticidesAcre_Handler.getText());
+            if(chemicalinsecticidesValue.length()==0)
+              chemicalInsecticidesAcre_Handler.setError("Cannot be empty");
+        }
         else
             chemicalinsecticidesValue ="0";
-        if(chemicalWeedicidesSwitch_Handler.isChecked())
-             chemicalweedicidesValue = String.valueOf(chemicalWeedicidesAcres_Handler.getText());
+        if(chemicalWeedicidesSwitch_Handler.isChecked()) {
+            chemicalweedicidesValue = String.valueOf(chemicalWeedicidesAcres_Handler.getText());
+            if(chemicalweedicidesValue.length()==0)
+                chemicalWeedicidesAcres_Handler.setError("Cannot be empty");
+        }
         else
             chemicalweedicidesValue ="0";
-        if(organicManures_Switch_Handler.isChecked())
-             organicmanuresValue = String.valueOf(organicManuresAcres_Handler.getText());
+        if(organicManures_Switch_Handler.isChecked()) {
+            organicmanuresValue = String.valueOf(organicManuresAcres_Handler.getText());
+            if(organicmanuresValue.length()==0)
+               organicManuresAcres_Handler.setError("Cannot be empty");
+        }
         else
             organicmanuresValue ="0";
         modeofIrrigationValue = typeofIrrigationSpinnerHandler.getSelectedItem().toString();
         systemofIrrigationValue = systemofIrrigationSpinnerHandler.getSelectedItem().toString();
-
-
         if(modeofIrrigationValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)typeofIrrigationSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(systemofIrrigationValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)systemofIrrigationSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+
+        if(modeofIrrigationValue.compareTo("Select Value")==0||systemofIrrigationValue.compareTo("Select Value")==0||chemicalweedicidesValue.length()==0||chemicalinsecticidesValue.length()==0||chemicalinsecticidesValue.length()==0)
             return false;
         else
             return true;
@@ -222,10 +256,10 @@ public class AgriculturalInputsActivity extends AppCompatActivity {
 
                             if(globalVar.getMenu()==0)
                             {
-                                // Intent i = new Intent(RespondentProfileActivity.this, MigrationStatusActivity.class);
+                                 Intent i = new Intent(AgriculturalInputsActivity.this, AgriProduceActivity.class);
 
                                 // Starts TargetActivity
-                                //  startActivity(i);
+                                  startActivity(i);
                             }
 
                             else
@@ -252,7 +286,23 @@ public class AgriculturalInputsActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(AgriculturalInputsActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                     }
                 }) {
             @Override

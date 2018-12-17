@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/familycoordinatorLayout"
     tools:context="ubasurvey.nawin.com.ubasurvey.HouseholdActivity"
-    android:background="#fcfcfc">
+    android:background="@drawable/familyinfobg">
 
 
     <android.support.v4.widget.NestedScrollView
@@ -449,7 +450,9 @@
                             android:layout_height="wrap_content"
                             android:gravity="right"
                             android:padding="5dp"
-                            android:text=" NO/YES    " />
+                            android:textOff="NO"
+                            android:textOn="YES"
+                            android:text="NO/YES" />
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 
@@ -502,7 +505,9 @@
                             android:layout_height="wrap_content"
                             android:gravity="right"
                             android:padding="5dp"
-                            android:text=" NO/YES    " />
+                            android:textOff="NO"
+                            android:textOn="YES"
+                            android:text="NO/YES" />
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 
@@ -555,7 +560,9 @@
                             android:layout_height="wrap_content"
                             android:gravity="right"
                             android:padding="5dp"
-                            android:text=" NO/YES    " />
+                            android:textOff="NO"
+                            android:textOn="YES"
+                            android:text="NO/YES" />
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 
@@ -723,7 +730,9 @@
                             android:layout_height="wrap_content"
                             android:gravity="right"
                             android:padding="5dp"
-                            android:text=" NO/YES    " />
+                            android:textOff="NO"
+                            android:textOn="YES"
+                            android:text="NO/YES" />
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 
@@ -776,7 +785,9 @@
                             android:layout_height="wrap_content"
                             android:gravity="right"
                             android:padding="5dp"
-                            android:text=" NO/YES    " />
+                            android:textOff="NO"
+                            android:textOn="YES"
+                            android:text="NO/YES" />
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 

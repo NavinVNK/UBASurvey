@@ -1,13 +1,18 @@
 package ubasurvey.nawin.com.ubasurvey;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -37,10 +42,14 @@ public class ProblemsVillageActivity extends AppCompatActivity {
     // Storing server url into String variable.
     String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformthirteen.php";
     String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+    private CoordinatorLayout coordinatorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_problems_village);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .majorprobcoordinatelayout);
         progressDialog = new ProgressDialog(ProblemsVillageActivity.this);
         globalVar=(ChoiceApplication)getApplicationContext();
         ubaid=globalVar.getUbaid();
@@ -90,28 +99,28 @@ public class ProblemsVillageActivity extends AppCompatActivity {
         if(!(problem1_Handler.getText().equals("")))
             problem1Value = String.valueOf(problem1_Handler.getText());
         else
-            problem1Value ="NA";
+            problem1Value ="None";
 
         if(!(problem2_Handler.getText().equals("")))
             problem2Value = String.valueOf(problem2_Handler.getText());
         else
-            problem2Value ="NA";
+            problem2Value ="None";
         if(!(problem3_Handler.getText().equals("")))
             problem3Value = String.valueOf(problem3_Handler.getText());
         else
-            problem3Value ="NA";
+            problem3Value ="None";
         if(!(solution1_Handler.getText().equals("")))
             solution1Value = String.valueOf(solution1_Handler.getText());
         else
-            solution1Value ="NA";
+            solution1Value ="None";
         if(!(solution2_Handler.getText().equals("")))
             solution2Value = String.valueOf(solution2_Handler.getText());
         else
-            solution2Value ="NA";
+            solution2Value ="None";
         if(!(solution3_Handler.getText().equals("")))
             solution3Value = String.valueOf(solution3_Handler.getText());
         else
-            solution3Value ="NA";
+            solution3Value ="None";
 
         return true;
 
@@ -130,12 +139,12 @@ public class ProblemsVillageActivity extends AppCompatActivity {
 
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
-
+/*
                         Toast toast = Toast.makeText(getApplicationContext(),
                                 ServerResponse,
                                 Toast.LENGTH_LONG);
 
-                        toast.show();
+                        toast.show();*/
                         if(ServerResponse.compareTo("0")==0)
                         {
                             // selectDatafromDB(ubaid);
@@ -145,9 +154,9 @@ public class ProblemsVillageActivity extends AppCompatActivity {
                         {
                             if(globalVar.getMenu()==0)
                             {
-                                // Intent i = new Intent(MigrationStatusActivity.this, MigrationStatusActivity.class);
+                                 Intent i = new Intent(ProblemsVillageActivity.this, GeneralInfoActivity.class);
                                 // Starts TargetActivity
-                                // startActivity(i);
+                                 startActivity(i);
 
                             }
                             else
@@ -222,7 +231,23 @@ public class ProblemsVillageActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(ProblemsVillageActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                         finish();;
                     }
                 }) {
@@ -263,56 +288,19 @@ public class ProblemsVillageActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if(problem1Value.compareTo("NA")==0||problem1Value.compareTo("0")==0)
-        {
-            problem1_Handler.setText("");
-        }
-        else
+
             problem1_Handler.setText(problem1Value);
 
-        if(solution1Value.compareTo("NA")==0||solution1Value.compareTo("0")==0)
-        {
-            solution1_Handler.setText("");
-        }
-        else
             solution1_Handler.setText(solution1Value);
 
-
-        if(problem2Value.compareTo("NA")==0||problem2Value.compareTo("0")==0)
-        {
-            problem2_Handler.setText("");
-        }
-        else
             problem2_Handler.setText(problem2Value);
 
-        if(solution2Value.compareTo("NA")==0||solution2Value.compareTo("0")==0)
-        {
-            solution2_Handler.setText("");
-        }
-        else
             solution2_Handler.setText(solution2Value);
 
-        if(problem3Value.compareTo("NA")==0||problem3Value.compareTo("0")==0)
-        {
-            problem3_Handler.setText("");
-        }
-        else
             problem3_Handler.setText(problem3Value);
 
-        if(solution3Value.compareTo("NA")==0||solution3Value.compareTo("0")==0)
-        {
-            solution3_Handler.setText("");
-        }
-        else
             solution3_Handler.setText(solution3Value);
 
     }
-    int  setSpinnerPos(Spinner spinner,String value)
-    {
-        ArrayAdapter myAdap = (ArrayAdapter) spinner.getAdapter(); //cast to an ArrayAdapter
-        return myAdap.getPosition(value);
-
-    }
-
 
 }

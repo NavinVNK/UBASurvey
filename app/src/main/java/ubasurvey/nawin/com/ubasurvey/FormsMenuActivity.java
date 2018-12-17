@@ -36,19 +36,23 @@ public class FormsMenuActivity extends AppCompatActivity implements RecyclerView
         setContentView(R.layout.activity_forms_menu);
         getWindow().setFormat(PixelFormat.RGB_565);
         ubaid=(TextView)findViewById(R.id.ubaidLabel);
-        ubaid.setText(globalVar.getUbaid());
+        ubaid.setText("UBAID :"+globalVar.getUbaid());
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         arrayList = new ArrayList<>();
-        arrayList.add(new DataModel("Basic Info", R.drawable.ic_assignment_black_24dp, "#660066"));
-        arrayList.add(new DataModel("Househlod Information", R.drawable.ic_assignment_black_24dp, "#4d1f00"));
-        arrayList.add(new DataModel("Respondant Profile", R.drawable.ic_assignment_black_24dp, "#000080"));
-        arrayList.add(new DataModel("Family Member Information", R.drawable.ic_assignment_black_24dp, "#4BAA50"));
-        arrayList.add(new DataModel("Migration Status in Family", R.drawable.ic_assignment_black_24dp, "#145214"));
-        arrayList.add(new DataModel("Goverment Scheme", R.drawable.ic_assignment_black_24dp, "#0A9B88"));
-        arrayList.add(new DataModel("Source of Water", R.drawable.ic_assignment_black_24dp, "#800000"));
-        arrayList.add(new DataModel("Agricultural Inputs", R.drawable.ic_assignment_black_24dp, "#cc0066"));
-        arrayList.add(new DataModel("Livestock Numbers", R.drawable.ic_assignment_black_24dp, "#003d4d"));
-        arrayList.add(new DataModel("Major Problems", R.drawable.ic_assignment_black_24dp, "#cc0000"));
+        arrayList.add(new DataModel("1.Basic Info", R.drawable.ic_assignment_black_24dp, "#408000"));
+        arrayList.add(new DataModel("2.Househlod Info", R.drawable.ic_assignment_black_24dp, "#990099"));
+        arrayList.add(new DataModel("3.Respondant Profile", R.drawable.ic_assignment_black_24dp, "#990000"));
+        arrayList.add(new DataModel("4.Family Member Info", R.drawable.ic_assignment_black_24dp, "#003d99"));
+        arrayList.add(new DataModel("5.Migration Status in Family", R.drawable.ic_assignment_black_24dp, "#e6e600"));
+        arrayList.add(new DataModel("6.Goverment Scheme", R.drawable.ic_assignment_black_24dp, "#6600cc"));
+        arrayList.add(new DataModel("7.Source of Water", R.drawable.ic_assignment_black_24dp, "#1ac6ff"));
+        arrayList.add(new DataModel("8.Source of Energy and Power", R.drawable.ic_assignment_black_24dp, "#ff1a1a"));
+        arrayList.add(new DataModel("9.Land Holding Info", R.drawable.ic_assignment_black_24dp, "#b30000"));
+        arrayList.add(new DataModel("10.Agricultural Inputs", R.drawable.ic_assignment_black_24dp, "#00e600"));
+        arrayList.add(new DataModel("11.Agricultural Produce", R.drawable.ic_assignment_black_24dp, "#602060"));
+        arrayList.add(new DataModel("12.Livestock Numbers", R.drawable.ic_assignment_black_24dp, "#77773c"));
+        arrayList.add(new DataModel("13.Major Problems", R.drawable.ic_assignment_black_24dp, "#996633"));
+        arrayList.add(new DataModel("General Info", R.drawable.ic_assignment_black_24dp, "#330080"));
 
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, arrayList, this);
         recyclerView.setAdapter(adapter);
@@ -75,32 +79,47 @@ public class FormsMenuActivity extends AppCompatActivity implements RecyclerView
         Toast.makeText(getApplicationContext(), item.text + " is clicked", Toast.LENGTH_SHORT).show();
         switch (item.text)
         {
-            case "Basic Info" :
+            case "1.Basic Info" :
                 startActivity(new Intent(FormsMenuActivity.this, BasicinfoActivity.class));
                 break;
-            case "Househlod Information" :
+            case "2.Househlod Info" :
                 startActivity(new Intent(FormsMenuActivity.this, HouseholdActivity.class));
                 break;
-            case "Respondant Profile":
+            case "3.Respondant Profile":
                 startActivity(new Intent(FormsMenuActivity.this, RespondentProfileActivity.class));
                 break;
-            case "Family Member Information":
+            case "4.Family Member Info":
                 startActivity(new Intent(FormsMenuActivity.this, FamilyInfoActivity.class));
                 break;
-            case "Migration Status in Family":
+            case "5.Migration Status in Family":
                 startActivity(new Intent(FormsMenuActivity.this, MigrationStatusActivity.class));
                 break;
-            case "Source of Water":
+            case "6.Goverment Scheme":
+                startActivity(new Intent(FormsMenuActivity.this, GovtSchemesActivity.class));
+                break;
+            case "7.Source of Water":
                 startActivity(new Intent(FormsMenuActivity.this, WaterSourceActivity.class));
                 break;
-            case "Agricultural Inputs":
+            case "8.Source of Energy and Power":
+                startActivity(new Intent(FormsMenuActivity.this, SourceEnergyActivity.class));
+                break;
+            case "9.Land Holding Info":
+                startActivity(new Intent(FormsMenuActivity.this, LandInfoActivity.class));
+                break;
+            case "10.Agricultural Inputs":
                 startActivity(new Intent(FormsMenuActivity.this, AgriculturalInputsActivity.class));
                 break;
-            case "Livestock Numbers":
+            case "11.Agricultural Produce":
+                startActivity(new Intent(FormsMenuActivity.this, AgriProduceActivity.class));
+                break;
+            case "12.Livestock Numbers":
                 startActivity(new Intent(FormsMenuActivity.this, LiveStockActivity.class));
                 break;
-            case "Major Problems":
+            case "13.Major Problems":
                 startActivity(new Intent(FormsMenuActivity.this, ProblemsVillageActivity.class));
+                break;
+            case "General Info":
+                startActivity(new Intent(FormsMenuActivity.this, GeneralInfoActivity.class));
                 break;
 
 

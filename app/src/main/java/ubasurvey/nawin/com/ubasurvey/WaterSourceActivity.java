@@ -2,7 +2,10 @@ package ubasurvey.nawin.com.ubasurvey;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -41,12 +44,14 @@ public class WaterSourceActivity extends AppCompatActivity {
 
     // Storing server url into String variable.
     String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformseven.php";
+    private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_water_source);
-
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .watersourcecoordinatorLayout);
         progressDialog = new ProgressDialog(WaterSourceActivity.this);
         globalVar=(ChoiceApplication)getApplicationContext();
         ubaid=globalVar.getUbaid();
@@ -64,8 +69,10 @@ public class WaterSourceActivity extends AppCompatActivity {
                     //statusSwitch1 = pipedWaterSource_Handler.getTextOn().toString();
                     pipedWaterDistance_Handler.setVisibility(View.VISIBLE);
                 }
-                else
+                else{
                     pipedWaterDistance_Handler.setVisibility(View.GONE);
+                pipedWaterDistance_Handler.setText("");}
+
                 //else
                 // statusSwitch1 = pipedWaterSource_Handler.getTextOff().toString();
                 //Toast.makeText(getApplicationContext(), "Switch1 :" + statusSwitch1 + "\n", Toast.LENGTH_LONG).show(); // display the current state for switch's
@@ -82,9 +89,9 @@ public class WaterSourceActivity extends AppCompatActivity {
                     //statusSwitch1 = pipedWaterSource_Handler.getTextOn().toString();
                     communityWaterTapDistance_Handler.setVisibility(View.VISIBLE);
                 }
-                else
+                else{
                     communityWaterTapDistance_Handler.setVisibility(View.GONE);
-                //statusSwitch1 = pipedWaterSource_Handler.getTextOff().toString();
+                communityWaterTapDistance_Handler.setText("");}
                 //Toast.makeText(getApplicationContext(), "Switch1 :" + statusSwitch1 + "\n", Toast.LENGTH_LONG).show(); // display the current state for switch's
             }
         });
@@ -100,8 +107,10 @@ public class WaterSourceActivity extends AppCompatActivity {
                     //statusSwitch1 = pipedWaterSource_Handler.getTextOn().toString();
                     handPumpDistance_Handler.setVisibility(View.VISIBLE);
                 }
-                else
+                else {
                     handPumpDistance_Handler.setVisibility(View.GONE);
+                    handPumpDistance_Handler.setText("");
+                }
 
                 //statusSwitch1 = pipedWaterSource_Handler.getTextOff().toString();
                 //Toast.makeText(getApplicationContext(), "Switch1 :" + statusSwitch1 + "\n", Toast.LENGTH_LONG).show(); // display the current state for switch's
@@ -119,8 +128,11 @@ public class WaterSourceActivity extends AppCompatActivity {
                     //statusSwitch1 = pipedWaterSource_Handler.getTextOn().toString();
                     openWellDistance_Handler.setVisibility(View.VISIBLE);
                 }
-                else
+                else {
                     openWellDistance_Handler.setVisibility(View.GONE);
+                    openWellDistance_Handler.setText("");
+                }
+
 
                 //statusSwitch1 = pipedWaterSource_Handler.getTextOff().toString();
                 //Toast.makeText(getApplicationContext(), "Switch1 :" + statusSwitch1 + "\n", Toast.LENGTH_LONG).show(); // display the current state for switch's
@@ -164,31 +176,53 @@ public class WaterSourceActivity extends AppCompatActivity {
 
     private boolean getValueFromForm() {
 
-       if(pipedWaterSource_Handler.isChecked())
-          pipedWaterDistanceValue = String.valueOf(pipedWaterDistance_Handler.getText());
+       if(pipedWaterSource_Handler.isChecked()) {
+           pipedWaterDistanceValue = String.valueOf(pipedWaterDistance_Handler.getText());
+           if(pipedWaterDistanceValue.length()==0)
+               pipedWaterDistance_Handler.setError("Cannot be empty");
+       }
        else
            pipedWaterDistanceValue ="NA";
-       if(communityWaterTap_Handler.isChecked())
-        communityWaterTapDistanceValue = String.valueOf(communityWaterTapDistance_Handler.getText());
+       if(communityWaterTap_Handler.isChecked()) {
+
+           communityWaterTapDistanceValue = String.valueOf(communityWaterTapDistance_Handler.getText());
+           if(communityWaterTapDistanceValue.length()==0)
+              communityWaterTapDistance_Handler.setError("Cannot be empty");
+       }
        else
            communityWaterTapDistanceValue="NA";
-       if(handPump_Handler.isChecked())
-        handPumpDistanceValue = String.valueOf(handPumpDistance_Handler.getText());
+       if(handPump_Handler.isChecked()) {
+
+           handPumpDistanceValue = String.valueOf(handPumpDistance_Handler.getText());
+           if(handPumpDistanceValue.length()==0)
+               handPump_Handler.setError("Cannot be empty");
+       }
        else
            handPumpDistanceValue="NA";
-       if(openWell_Handler.isChecked())
-        openWellDistanceValue = String.valueOf(openWellDistance_Handler.getText());
+       if(openWell_Handler.isChecked()) {
+
+           openWellDistanceValue = String.valueOf(openWellDistance_Handler.getText());
+           if(openWellDistanceValue.length()==0)
+               openWell_Handler.setError("Cannot be empty");
+       }
        else
            openWellDistanceValue="NA";
         otherSourceValue = String.valueOf(otherSource_Handler.getText());
 
         modeofWaterStorageValue = typeofWaterSourceSpinnerHandler.getSelectedItem().toString();
 
+        if(modeofWaterStorageValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)typeofWaterSourceSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
 
-        if(modeofWaterStorageValue.compareTo("Select Value")==0||(pipedWaterSource_Handler.isChecked()&&pipedWaterDistanceValue.compareTo("Select Value")==0)||
-                (communityWaterTap_Handler.isChecked()&&communityWaterTapDistanceValue.compareTo("Select Value")==0)||
-                ( handPump_Handler.isChecked()&&handPumpDistanceValue.compareTo("Select Value")==0)||
-        ( openWell_Handler.isChecked()&&openWellDistanceValue.compareTo("Select Value")==0))
+        if(modeofWaterStorageValue.compareTo("Select Value")==0||(pipedWaterSource_Handler.isChecked()&&pipedWaterDistanceValue.compareTo("")==0)||
+                (communityWaterTap_Handler.isChecked()&&communityWaterTapDistanceValue.compareTo("")==0)||
+                ( handPump_Handler.isChecked()&&handPumpDistanceValue.compareTo("")==0)||
+        ( openWell_Handler.isChecked()&&openWellDistanceValue.compareTo("")==0))
             return false;
         else
             return true;
@@ -208,12 +242,12 @@ public class WaterSourceActivity extends AppCompatActivity {
 
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
-
+/*
                         Toast toast = Toast.makeText(getApplicationContext(),
                                 ServerResponse,
                                 Toast.LENGTH_LONG);
 
-                        toast.show();
+                        toast.show();*/
                         if(ServerResponse.compareTo("0")==0) {
 
 
@@ -223,10 +257,10 @@ public class WaterSourceActivity extends AppCompatActivity {
 
                             if(globalVar.getMenu()==0)
                             {
-                             //   Intent i = new Intent(RespondentProfileActivity.this, MigrationStatusActivity.class);
+                               Intent i = new Intent(WaterSourceActivity.this, SourceEnergyActivity.class);
 
                                 // Starts TargetActivity
-                              //  startActivity(i);
+                                startActivity(i);
                             }
 
                             else
@@ -238,7 +272,7 @@ public class WaterSourceActivity extends AppCompatActivity {
                         // Intent i = new Intent(BasicinfoActivity.this, HouseholdActivity.class);
                         // Starts TargetActivity
                         // startActivity(i);
-                        //  finish();
+                         finish();
                     }
                 },
                 new Response.ErrorListener() {
@@ -249,7 +283,23 @@ public class WaterSourceActivity extends AppCompatActivity {
                         progressDialog.dismiss();
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(WaterSourceActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                     }
                 }) {
             @Override
@@ -305,37 +355,49 @@ public class WaterSourceActivity extends AppCompatActivity {
             pipedWaterSource_Handler.setChecked(false);
             pipedWaterDistance_Handler.setText("");
         }
-        else
+        else {
+            pipedWaterSource_Handler.setChecked(true);
+            pipedWaterDistance_Handler.setVisibility(View.VISIBLE);
             pipedWaterDistance_Handler.setText(pipedWaterDistanceValue);
+        }
 
         if(communityWaterTapDistanceValue.compareTo("NA")==0||communityWaterTapDistanceValue.compareTo("0")==0)
         {
             communityWaterTap_Handler.setChecked(false);
             communityWaterTapDistance_Handler.setText("");
         }
-        else
+        else {
+            communityWaterTap_Handler.setChecked(true);
+            communityWaterTapDistance_Handler.setVisibility(View.VISIBLE);
             communityWaterTapDistance_Handler.setText(pipedWaterDistanceValue);
+        }
 
          if(handPumpDistanceValue.compareTo("NA")==0||handPumpDistanceValue.compareTo("0")==0)
          {
              handPump_Handler.setChecked(false);
              handPumpDistance_Handler.setText("");
          }
-         else
+         else {
+             handPump_Handler.setChecked(true);
+             handPumpDistance_Handler.setVisibility(View.VISIBLE);
              handPumpDistance_Handler.setText(handPumpDistanceValue);
+         }
         if(openWellDistanceValue.compareTo("NA")==0||openWellDistanceValue.compareTo("0")==0)
         {
             openWell_Handler.setChecked(false);
             openWellDistance_Handler.setText("");
         }
-        else
+        else {
+            openWell_Handler.setChecked(true);
+            openWellDistance_Handler.setVisibility(View.VISIBLE);
             openWellDistance_Handler.setText(openWellDistanceValue);
+        }
 
      if(otherSourceValue.compareTo("0")==0)
          otherSource_Handler.setText("");
       else
         otherSource_Handler.setText(otherSourceValue);
-      if(modeofWaterStorageValue.compareTo("0")==0)
+      if(modeofWaterStorageValue.compareTo("null")==0)
           typeofWaterSourceSpinnerHandler.setSelection(0);
 
           else
