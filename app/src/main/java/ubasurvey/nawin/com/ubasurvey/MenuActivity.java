@@ -1,15 +1,36 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
+
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,6 +38,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,22 +54,30 @@ public class MenuActivity extends AppCompatActivity {
     ImageView insert,update,select,delete;
     ChoiceApplication globalObject;
      CollapsingToolbarLayout collapsingToolbarLayout;
-    SharedPreferences prefs;
-    static final String KEY="ubaid";
+    private CoordinatorLayout coordinatorLayout;
 
 
-    String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+
+    String HttpSelectUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+    static String HttpupdateUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        HttpSelectUrl=getString(R.string.url)+"ubagetformone.php";
+        HttpupdateUrl = getString(R.string.url)+"ubaupdatemessage.php";
         collapsingToolbarLayout=(CollapsingToolbarLayout)findViewById(R.id.collapsingtoolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarid);
+
+        setSupportActionBar(toolbar);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id
+                .menucoordinatelayout);
 
         progressDialog = new ProgressDialog(MenuActivity.this);
-        prefs = getSharedPreferences("lastrecord",MODE_PRIVATE);
+
         globalObject=(ChoiceApplication)getApplicationContext();
         collapsingToolbarLayout.setTitle("UBA Survey :  "+globalObject.getVolunteerID()+"  Logged in");
-        Log.d("Share",prefs.getString(KEY,"no value saved"));
+        //Log.d("Share",prefs.getString(KEY,"no value saved"));
         insert=(ImageView)findViewById(R.id.insertimg);
         insert.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,10 +160,25 @@ public class MenuActivity extends AppCompatActivity {
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
                         globalObject.setJsonString("");
-
                         // Showing error message if something goes wrong.
-                        Toast.makeText(MenuActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
-                        //finish();;
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
+                        finish();;
                     }
                 }) {
             @Override
@@ -155,5 +201,194 @@ public class MenuActivity extends AppCompatActivity {
         // Adding the StringRequest object into requestQueue.
         requestQueue.add(stringRequest);
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(globalObject.getVolunteerID().compareTo("admin")==0) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_message, menu);
+        }
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.action_message:
+/*                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);*/
+                DialogFragment dialogFragment = new MessageFragment();
+
+                dialogFragment.show(getSupportFragmentManager(),"dialog");
+                break;
+
+            default:
+                break;
+        }
+
+        return true;
+    }
+
+    public static class MessageFragment extends DialogFragment {
+        ProgressDialog progressDialog;
+        //String //http://navinsjavatutorial.000webhostapp.com/ucbsurvey/
+
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState)
+        {
+            final EditText msgtitle;
+            final EditText msgsubject;
+            final Button message,clear;
+            final Dialog dialog;
+
+            progressDialog = new ProgressDialog(getActivity());
+          final  View view = getActivity().getLayoutInflater().inflate(
+                    R.layout.fragment_message, null);
+
+
+            msgsubject=view.findViewById(R.id.msgsubject);
+            message=view.findViewById(R.id.msg_btn);
+            clear=view.findViewById(R.id.clear_btn);
+
+
+            msgtitle=view.findViewById(R.id.msgtitle);
+
+            dialog= new AlertDialog.Builder(getActivity())
+                    .setView(view)
+                    .setTitle("Message Board")
+                    .setIcon(R.drawable.uba)
+
+
+                  /*  .setPositiveButton(
+                            "Send",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if(msgtitle.length()==0)
+                                    {
+*//*                                        YoYo.with(Techniques.BounceInUp)
+                                                .duration(700)
+                                                .playOn(view.findViewById(R.id.msgtitle));*//*
+
+                                    }
+                                    else
+                                    {
+                                        insertToDB(msgtitle.getText().toString(),msgsubject.getText().toString());
+                                        dialog.dismiss();
+                                    }
+                                }
+                            })
+                    .setNegativeButton(
+                            "Clear",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    msgtitle.setText("");
+                                    msgsubject.setText("");
+                                    insertToDB(msgtitle.getText().toString(),msgsubject.getText().toString());
+                                    dialog.cancel();
+                                }
+                            })*/
+                    .create();
+            message.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(msgtitle.length()==0)
+                    {
+                                       YoYo.with(Techniques.BounceInUp)
+                                                .duration(700)
+                                                .playOn(view.findViewById(R.id.msgtitle));
+
+                    }
+                    else
+                    {
+                        insertToDB(msgtitle.getText().toString(),msgsubject.getText().toString());
+                        dialog.dismiss();
+
+                    }
+                }
+            });
+            clear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    msgtitle.setText("");
+                    msgsubject.setText("");
+                    insertToDB(msgtitle.getText().toString(),msgsubject.getText().toString());
+                    dialog.dismiss();
+                }
+            });
+/*            dialog.requestWindowFeature(Window.FEATURE_RIGHT_ICON);
+            dialog.setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.uba);*/
+            return dialog;
+        }
+
+        void  insertToDB(String s1,String s2)
+        {
+            final String title=s1;
+            final String message=s2;
+            // Showing progress dialog at user registration time.
+            progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
+            progressDialog.show();
+            // Creating string request with post method.
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpupdateUrl,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String ServerResponse) {
+
+                            // Hiding the progress dialog after all task complete.
+                            progressDialog.dismiss();
+
+
+                            if(ServerResponse.compareTo("0")==0) {
+
+
+                            }
+                            else {
+
+
+                            }
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+
+                            // Hiding the progress dialog after all task complete.
+                            progressDialog.dismiss();
+
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
+
+                    // Creating Map String Params.
+                    Map<String, String> params = new HashMap<String, String>();
+
+                    // Adding All values to Params.					goingto
+
+                    params.put("title",title);
+                    params.put("message",message );
+
+
+                    return params;
+                }
+
+            };
+
+            // Creating RequestQueue.
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+            // Adding the StringRequest object into requestQueue.
+            requestQueue.add(stringRequest);
+
+        }
     }
 }

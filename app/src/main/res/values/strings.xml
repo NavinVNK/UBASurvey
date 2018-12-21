@@ -340,5 +340,11 @@
         <item>InductionStove </item>
         <item>Others </item>
     </string-array>
+    <string name="channel_name">101</string>
+    <string name="channel_description">UBA Messages</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="url">http://navinsjavatutorial.000webhostapp.com/ucbsurvey/</string>
+
 
 </resources>

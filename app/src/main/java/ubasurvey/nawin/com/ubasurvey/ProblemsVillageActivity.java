@@ -40,14 +40,15 @@ public class ProblemsVillageActivity extends AppCompatActivity {
     String ubaid, problem1Value,problem2Value,problem3Value,solution1Value,solution2Value,solution3Value;
 
     // Storing server url into String variable.
-    String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformthirteen.php";
-    String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+    String HttpInsertUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformthirteen.php";
+    //String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
     private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_problems_village);
+        HttpInsertUrl=getString(R.string.url)+"ubaupdateformthirteen.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .majorprobcoordinatelayout);
         progressDialog = new ProgressDialog(ProblemsVillageActivity.this);
@@ -147,7 +148,7 @@ public class ProblemsVillageActivity extends AppCompatActivity {
                         toast.show();*/
                         if(ServerResponse.compareTo("0")==0)
                         {
-                            // selectDatafromDB(ubaid);
+
                         }
 
                         else
@@ -174,9 +175,24 @@ public class ProblemsVillageActivity extends AppCompatActivity {
 
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
-
                         // Showing error message if something goes wrong.
-                        Toast.makeText(ProblemsVillageActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                        Snackbar snackbar = Snackbar
+                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
                     }
                 }) {
             @Override
@@ -202,76 +218,7 @@ public class ProblemsVillageActivity extends AppCompatActivity {
         // Adding the StringRequest object into requestQueue.
         requestQueue.add(stringRequest);
     }
-    void  selectDatafromDB(final String ubaidlocal)
-    {
-        // Showing progress dialog at user registration time.
-        progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
-        progressDialog.show();
-        // Creating string request with post method.
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpSelectUrl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String ServerResponse) {
 
-                        // Hiding the progress dialog after all task complete.
-                        progressDialog.dismiss();
-                        setValuetoForm(ServerResponse);
-                        Toast toast = Toast.makeText(getApplicationContext(),
-                                ServerResponse,
-                                Toast.LENGTH_LONG);
-
-                        toast.show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-
-                        // Hiding the progress dialog after all task complete.
-                        progressDialog.dismiss();
-
-                        // Showing error message if something goes wrong.
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
-                                .setAction("RETRY", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                    }
-                                });
-
-                        // Changing message text color
-                        snackbar.setActionTextColor(Color.RED);
-
-                        // Changing action button text color
-                        View sbView = snackbar.getView();
-                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(Color.YELLOW);
-
-                        snackbar.show();
-                        finish();;
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-
-                // Creating Map String Params.
-                Map<String, String> params = new HashMap<String, String>();
-
-                // Adding All values to Params.
-                params.put("ubaid", ubaidlocal);
-
-                return params;
-            }
-
-        };
-
-        // Creating RequestQueue.
-        RequestQueue requestQueue = Volley.newRequestQueue(ProblemsVillageActivity.this);
-
-        // Adding the StringRequest object into requestQueue.
-        requestQueue.add(stringRequest);
-
-    }
     public void setValuetoForm(String jsonString){
 
         try {

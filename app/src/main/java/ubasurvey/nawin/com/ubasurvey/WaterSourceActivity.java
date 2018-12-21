@@ -43,13 +43,14 @@ public class WaterSourceActivity extends AppCompatActivity {
     String ubaid, pipedWaterDistanceValue,communityWaterTapDistanceValue,handPumpDistanceValue,openWellDistanceValue,modeofWaterStorageValue,otherSourceValue;
 
     // Storing server url into String variable.
-    String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformseven.php";
+    String HttpInsertUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformseven.php";
     private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_water_source);
+        HttpInsertUrl =getString(R.string.url)+"ubaupdateformseven.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .watersourcecoordinatorLayout);
         progressDialog = new ProgressDialog(WaterSourceActivity.this);

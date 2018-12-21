@@ -44,13 +44,14 @@ LinearLayout layoutFamilymigration,layoutDaymonth,layoutYears;
     String ubaid,migrationstatusValue,familymigratednosValue,monthValue,daysmonthValue,yearsValue;
 
     // Storing server url into String variable.
-    String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformfour.php";
+    String HttpInsertUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformfour.php";
     private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_migration_status);
+        HttpInsertUrl =getString(R.string.url)+"ubaupdateformfour.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .migrationcoordinatorLayout);
         globalVar=(ChoiceApplication)getApplicationContext();

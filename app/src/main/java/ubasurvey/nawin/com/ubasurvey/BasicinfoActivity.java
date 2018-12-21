@@ -77,17 +77,17 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
     
     
     ChoiceApplication globalVar;
-    SharedPreferences prefs;
+
     boolean success;
-    static final String KEY="ubaid";
+
 
     // Creating Progress dialog.
     ProgressDialog progressDialog;
 
     // Storing server url into String variable.
-    String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubainsertformone.php";
-    String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
-    String HttpUpdatetUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformone.php";
+    String HttpInsertUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubainsertformone.php";
+    String HttpSelectUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+    String HttpUpdatetUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformone.php";
 
 
     Button btn_submit;
@@ -112,6 +112,10 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_basic_info);
+        HttpInsertUrl=getString(R.string.url)+"ubainsertformone.php";
+        HttpSelectUrl=getString(R.string.url)+"ubagetformone.php";
+        HttpUpdatetUrl=getString(R.string.url)+"ubaupdateformone.php";
+
         progressDialog = new ProgressDialog(BasicinfoActivity.this);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .basiccoordinatorLayout);
@@ -319,6 +323,9 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
         if(householdIDValue.length()==0){
             householdIDEditTextHandler.setError("Cannot be empty");
         }
+        if(streetValue.length()==0){
+            streetEdithandler.setError("Cannot be empty");
+        }
 
 
         if(blockSpinnerValue.compareTo("Select Value")==0)
@@ -377,12 +384,7 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
                                Toast.LENGTH_LONG);
 
                        toast.show();*/
-                       prefs = getSharedPreferences("lastrecord", MODE_PRIVATE);
-                       SharedPreferences.Editor editor = prefs.edit();
-                       //---save the values in the EditText view to preferences---
-                       editor.putString(KEY, ubaid);
-                       //---saves the values---
-                       editor.commit();
+
                        Intent i = new Intent(BasicinfoActivity.this, HouseholdActivity.class);
                        i.putExtra("houseid",householdIDValue);
                        i.putExtra("househeadname",household_headNameValue);
@@ -465,7 +467,7 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
 
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
-/*                        Toast toast = Toast.makeText(getApplicationContext(),
+/*                      Toast toast = Toast.makeText(getApplicationContext(),
                                 ServerResponse,
                                 Toast.LENGTH_LONG);
 

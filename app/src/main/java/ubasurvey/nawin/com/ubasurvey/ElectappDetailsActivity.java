@@ -44,8 +44,8 @@ public class ElectappDetailsActivity extends AppCompatActivity {
     String ubaid,ubaelecno,countValue,durationValue,electricalappnameValue;
             ;
     // Storing server url into String variable.
-    String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubainsertelecticappdetails.php";
-    String HttpupdateUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateelectricalappdetails.php";
+    String HttpInsertUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubainsertelecticappdetails.php";
+    String HttpupdateUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateelectricalappdetails.php";
     private boolean update;
     private CoordinatorLayout coordinatorLayout;
 
@@ -53,6 +53,8 @@ public class ElectappDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_electapp_details);
+        HttpInsertUrl=getString(R.string.url)+"ubainsertelecticappdetails.php";
+        HttpupdateUrl=getString(R.string.url)+"ubaupdateelectricalappdetails.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .electricalappcoordinatorLayout);
         Bundle bundle = getIntent().getExtras();
@@ -232,74 +234,6 @@ public class ElectappDetailsActivity extends AppCompatActivity {
                 params.put("appliances",electricalappnameValue );
                 params.put("count", countValue);
                 params.put("duration",durationValue );
-
-                return params;
-            }
-
-        };
-
-        // Creating RequestQueue.
-        RequestQueue requestQueue = Volley.newRequestQueue(ElectappDetailsActivity.this);
-
-        // Adding the StringRequest object into requestQueue.
-        requestQueue.add(stringRequest);
-
-    }
-    void  selectDatafromDB(final String ubaidlocal)
-    {
-        // Showing progress dialog at user registration time.
-        progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
-        progressDialog.show();
-        // Creating string request with post method.
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpupdateUrl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String ServerResponse) {
-
-                        // Hiding the progress dialog after all task complete.
-                        progressDialog.dismiss();
-                        //code to globar var
-                        globalVar.setJsonString(ServerResponse);
-                        finish();
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-
-                        // Hiding the progress dialog after all task complete.
-                        progressDialog.dismiss();
-
-                        // Showing error message if something goes wrong.
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
-                                .setAction("RETRY", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                    }
-                                });
-
-                        // Changing message text color
-                        snackbar.setActionTextColor(Color.RED);
-
-                        // Changing action button text color
-                        View sbView = snackbar.getView();
-                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(Color.YELLOW);
-
-                        snackbar.show();
-                        finish();;
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-
-                // Creating Map String Params.
-                Map<String, String> params = new HashMap<String, String>();
-
-                // Adding All values to Params.
-                params.put("ubaid", ubaidlocal);
 
                 return params;
             }

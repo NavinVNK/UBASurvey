@@ -13,6 +13,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,7 @@ Button addButton,nextButton;
     ChoiceApplication globalVar;
     String familyRecord[];
     int positionSeleced;
-    String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaselectfamilydetails.php";
+    String HttpSelectUrl ;//= "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaselectfamilydetails.php";
     private CoordinatorLayout coordinatorLayout;
 
     public static interface ClickListener{
@@ -129,6 +130,7 @@ Button addButton,nextButton;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_family_info);
+        HttpSelectUrl=getString(R.string.url)+"ubaselectfamilydetails.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .familyinfocoordinatorlayout);
         globalVar=(ChoiceApplication)getApplicationContext();
@@ -173,12 +175,13 @@ Button addButton,nextButton;
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                globalVar.resetIncrement();
+                if(globalVar.getMenu()==0) {
+                    globalVar.resetIncrement();
 
-                Intent i = new Intent(FamilyInfoActivity.this, MigrationStatusActivity.class);
+                    Intent i = new Intent(FamilyInfoActivity.this, MigrationStatusActivity.class);
+                    startActivity(i);
+                  }
 
-                // Starts TargetActivity
-                startActivity(i);
                 finish();
 
             }
@@ -192,11 +195,9 @@ Button addButton,nextButton;
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(mAdapter);
             recyclerView.setHasFixedSize(true);
-            if(globalVar.getMenu()==1) {
-                nextButton.setVisibility(View.GONE);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-                addButton.setLayoutParams(layoutParams);
-          }
+        if(globalVar.getMenu()==1)
+            nextButton.setText("Back");
+
         prepareRecordData();
 
     }

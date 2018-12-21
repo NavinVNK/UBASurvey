@@ -1,11 +1,17 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
@@ -28,12 +34,17 @@ import com.android.volley.toolbox.Volley;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private int request_Code = 1;
     ChoiceApplication globalVar;
+    SharedPreferences prefs;
+    static final String KEY="user";
     TextView location ;
     // Creating EditText.
     EditText FirstName, LastName, Email ;
@@ -48,19 +59,21 @@ public class LoginActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
 
     // Storing server url into String variable.
-    String HttpUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/checklogin.php";
+    String HttpUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/checklogin.php";
     private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        HttpUrl=getString(R.string.url)+"checklogin.php";
         relativeLayout=(RelativeLayout)findViewById(R.id.loginrelativelayout);
         globalVar=(ChoiceApplication)getApplicationContext();
+        prefs = getSharedPreferences("username",MODE_PRIVATE);
         // Assigning ID's to EditText.
         FirstName = (EditText) findViewById(R.id.input_email);
         LastName = (EditText) findViewById(R.id.input_password);
-        //Email = (EditText) findViewById(R.id.editTextEmail);
+       FirstName.setText(prefs.getString("user",""));
 
         // Assigning ID's to Button.
         InsertButton = (Button) findViewById(R.id.btn_login);
@@ -120,15 +133,24 @@ public class LoginActivity extends AppCompatActivity {
 
                                 // Hiding the progress dialog after all task complete.
                                 progressDialog.dismiss();
+/*                                Toast toast = Toast.makeText(getApplicationContext(),
+                                        ServerResponse,
+                                        Toast.LENGTH_LONG);
+
+                                toast.show();*/
 
                                 // Showing response message coming from server.
-                                if(ServerResponse.compareTo("success")==0) {
+                                if(ServerResponse.compareTo("failed")==0) {
+                                    Toast.makeText(LoginActivity.this, "Login Failure", Toast.LENGTH_LONG).show();
+                                }
+                                else
+                                {   saveUsername(FirstNameHolder);
+                                    sendNotification(ServerResponse);
                                     globalVar.setVolunteerID(FirstNameHolder);
                                     startActivity(new Intent(LoginActivity.this, MenuActivity.class));
                                     finish();
                                 }
-                                else
-                                    Toast.makeText(LoginActivity.this, "Login Failure", Toast.LENGTH_LONG).show();
+
                                 //if(ServerResponse.compareTo("1")==0)
                                 //
                                 // else
@@ -238,5 +260,77 @@ public class LoginActivity extends AppCompatActivity {
         // EmailHolder = Email.getText().toString().trim();
 
     }
+   void  saveUsername(String user)
+    {
+        prefs = getSharedPreferences("username", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        //---save the values in the EditText view to preferences---
+        editor.putString(KEY, user);
+        //---saves the values---
+        editor.commit();
+    }
+
+   void  sendNotification(String ServerResponse)
+   {
+       String title="";
+       String message="";
+       try {
+
+           JSONObject jobj = new JSONObject(ServerResponse);
+           /*        */
+           title = jobj.getString("title");
+           message = jobj.getString("message");
+
+       }
+       catch (JSONException e) {
+           e.printStackTrace();
+       }
+       if(title.length()!=0)
+       {
+           NotificationCompat.Builder mBuilder =
+                   new NotificationCompat.Builder(LoginActivity.this,"111")
+                           .setSmallIcon(R.drawable.uba)
+                           .setContentTitle(title)
+                           .setContentText(message).setChannelId("111").
+                           setStyle(new NotificationCompat.BigTextStyle()
+                                   .bigText(message));
+
+
+           // Gets an instance of the NotificationManager service//
+
+           NotificationManager notificationManager =
+
+                   (NotificationManager) getSystemService(LoginActivity.this.NOTIFICATION_SERVICE);
+           String channelId = "111";
+           String channelDescription = "Default Channel";
+// Since android Oreo notification channel is needed.
+//Check if notification channel exists and if not create one
+           if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+               NotificationChannel notificationChannel = notificationManager.getNotificationChannel(channelId);
+               if (notificationChannel == null) {
+                   int importance = NotificationManager.IMPORTANCE_HIGH; //Set the importance level
+                   notificationChannel = new NotificationChannel(channelId, channelDescription, importance);
+                   notificationChannel.setLightColor(Color.GREEN); //Set if it is necesssary
+                   notificationChannel.enableVibration(true); //Set if it is necesssary
+                   notificationManager.createNotificationChannel(notificationChannel);
+               }
+               notificationManager.createNotificationChannel(notificationChannel);
+           }
+
+
+           // When you issue multiple notifications about the same type of event,
+           // it’s best practice for your app to try to update an existing notification
+           // with this new information, rather than immediately creating a new notification.
+           // If you want to update this notification at a later date, you need to assign it an ID.
+           // You can then use this ID whenever you issue a subsequent notification.
+           // If the previous notification is still visible, the system will update this existing notification,
+           // rather than create a new one. In this example, the notification’s ID is 001//
+
+           notificationManager.notify(111, mBuilder.build());
+       }
+
+
+
+   }
 
 }

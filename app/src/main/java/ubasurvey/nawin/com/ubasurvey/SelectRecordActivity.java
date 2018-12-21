@@ -108,16 +108,18 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
     ProgressDialog progressDialog;
 
 
-    String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaselectrecords.php";
-    String HttpSelectUrl1 = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
-    String HttpDeleteUrl="http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubadeleterecord.php";
+    String HttpSelectUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaselectrecords.php";
+    String HttpSelectUrl1;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+    String HttpDeleteUrl;//="http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubadeleterecord.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_record);
         globalVar=(ChoiceApplication)getApplicationContext();
-
+        HttpSelectUrl=getString(R.string.url)+"ubaselectrecords.php";
+        HttpSelectUrl1=getString(R.string.url)+"ubagetformone.php";
+        HttpDeleteUrl=getString(R.string.url)+"ubadeleterecord.php";
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         linearLayout=(LinearLayout)findViewById(R.id.linearlayout);

@@ -115,21 +115,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:weightSum="3"
                 android:orientation="horizontal">
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/addfamilymem_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
-                    android:layout_marginRight="100dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:padding="10dp"
                     android:background="@color/button_bg"
                     android:textColor="@color/button_text_color"
                     android:text="Add"/>
+                <Space
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/next_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
                     android:padding="10dp"
                     android:background="@color/button_bg"
                     android:textColor="@color/button_text_color"

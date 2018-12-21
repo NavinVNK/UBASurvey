@@ -39,13 +39,14 @@ public class RespondentProfileActivity extends AppCompatActivity {
 
     String ubaid="",respondentNameValue="",respondentAgeValue="",relationshipNameValue="",respondentmobileNoValue="",respondentIdtypeValue="",
             respondent_genderSpinnerValue="",respondentIdnumberValue="";
-    String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformthree.php";
+    String HttpInsertUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformthree.php";
     private CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_respondent_profile);
+        HttpInsertUrl=getString(R.string.url)+"ubaupdateformthree.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .respondentcoordinatorLayout);
         globalVar=(ChoiceApplication)getApplicationContext();

@@ -48,13 +48,14 @@ TextView  Email;
     String userName;
 
     // Storing server url into String variable.
-    String HttpUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/changepsw.php";
+    String HttpUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/changepsw.php";
     private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_psw);
+        HttpUrl=getString(R.string.url)+"changepsw.php";
         relativeLayout=(RelativeLayout)findViewById(R.id.pswrelativelayout);
         // Assigning ID's to EditText.
         OldPassword = (EditText) findViewById(R.id.oldpsw);

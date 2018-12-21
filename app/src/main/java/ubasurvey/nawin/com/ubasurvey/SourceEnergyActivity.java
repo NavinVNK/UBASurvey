@@ -62,8 +62,8 @@ public class SourceEnergyActivity extends AppCompatActivity {
     String ubaid, electricityAvailValue,electricitySourceValue,cookingSourceValue,otherlightingsourceValue,othercookingsourceValue;
 
     // Storing server url into String variable.
-    String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaselectelectricalappdetails.php";
-    String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformsix.php";
+    String HttpSelectUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaselectelectricalappdetails.php";
+    String HttpInsertUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformsix.php";
     private CoordinatorLayout coordinatorLayout;
     private int request_Code = 1;
 
@@ -144,6 +144,8 @@ public class SourceEnergyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_source_energy);
+        HttpInsertUrl =getString(R.string.url)+ "ubaupdateformsix.php";
+                HttpSelectUrl =getString(R.string.url)+"ubaselectelectricalappdetails.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .energysourcecoordinatorLayout);
         progressDialog = new ProgressDialog(SourceEnergyActivity.this);

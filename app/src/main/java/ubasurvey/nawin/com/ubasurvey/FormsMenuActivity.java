@@ -43,7 +43,7 @@ public class FormsMenuActivity extends AppCompatActivity implements RecyclerView
         arrayList.add(new DataModel("2.Househlod Info", R.drawable.ic_assignment_black_24dp, "#990099"));
         arrayList.add(new DataModel("3.Respondant Profile", R.drawable.ic_assignment_black_24dp, "#990000"));
         arrayList.add(new DataModel("4.Family Member Info", R.drawable.ic_assignment_black_24dp, "#003d99"));
-        arrayList.add(new DataModel("5.Migration Status in Family", R.drawable.ic_assignment_black_24dp, "#e6e600"));
+        arrayList.add(new DataModel("5.Migration Status in Family", R.drawable.ic_assignment_black_24dp, "#206040"));
         arrayList.add(new DataModel("6.Goverment Scheme", R.drawable.ic_assignment_black_24dp, "#6600cc"));
         arrayList.add(new DataModel("7.Source of Water", R.drawable.ic_assignment_black_24dp, "#1ac6ff"));
         arrayList.add(new DataModel("8.Source of Energy and Power", R.drawable.ic_assignment_black_24dp, "#ff1a1a"));
@@ -76,7 +76,7 @@ public class FormsMenuActivity extends AppCompatActivity implements RecyclerView
     @Override
     public void onItemClick(DataModel item) {
 
-        Toast.makeText(getApplicationContext(), item.text + " is clicked", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), item.text + " is clicked", Toast.LENGTH_SHORT).show();
         switch (item.text)
         {
             case "1.Basic Info" :

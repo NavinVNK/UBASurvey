@@ -45,7 +45,7 @@ public class GovtSchemesActivity extends AppCompatActivity {
 
     // Storing server url into String variable.
     String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformfive.php";
-    String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+   // String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
     private CoordinatorLayout coordinatorLayout;
 
     @Override
@@ -53,6 +53,7 @@ public class GovtSchemesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_govt_schemes);
+        HttpInsertUrl =getString(R.string.url)+"ubaupdateformfive.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .govtcoordinatelayout);
         progressDialog = new ProgressDialog(GovtSchemesActivity.this);
@@ -292,76 +293,7 @@ public class GovtSchemesActivity extends AppCompatActivity {
         // Adding the StringRequest object into requestQueue.
         requestQueue.add(stringRequest);
     }
-    void  selectDatafromDB(final String ubaidlocal)
-    {
-        // Showing progress dialog at user registration time.
-        progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
-        progressDialog.show();
-        // Creating string request with post method.
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpSelectUrl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String ServerResponse) {
 
-                        // Hiding the progress dialog after all task complete.
-                        progressDialog.dismiss();
-                        setValuetoForm(ServerResponse);
-/*                        Toast toast = Toast.makeText(getApplicationContext(),
-                                ServerResponse,
-                                Toast.LENGTH_LONG);
-
-                        toast.show();*/
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-
-                        // Hiding the progress dialog after all task complete.
-                        progressDialog.dismiss();
-
-                        // Showing error message if something goes wrong.
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
-                                .setAction("RETRY", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                    }
-                                });
-
-                        // Changing message text color
-                        snackbar.setActionTextColor(Color.RED);
-
-                        // Changing action button text color
-                        View sbView = snackbar.getView();
-                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(Color.YELLOW);
-
-                        snackbar.show();
-                        finish();;
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-
-                // Creating Map String Params.
-                Map<String, String> params = new HashMap<String, String>();
-
-                // Adding All values to Params.
-                params.put("ubaid", ubaidlocal);
-
-                return params;
-            }
-
-        };
-
-        // Creating RequestQueue.
-        RequestQueue requestQueue = Volley.newRequestQueue(GovtSchemesActivity.this);
-
-        // Adding the StringRequest object into requestQueue.
-        requestQueue.add(stringRequest);
-
-    }
     public void setValuetoForm(String jsonString){
 
         try {
@@ -388,107 +320,40 @@ public class GovtSchemesActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if(dhanyojanaValue.compareTo("0")==0)
-        {
-            dhanyojana_EditHandler.setText("");
-        }
-        else
+
             dhanyojana_EditHandler.setText(dhanyojanaValue);
 
-        if(ujjwalayojanaValue.compareTo("0")==0)
-        {
-            ujjwalayojana_EditHandler.setText("");
-        }
-        else
             ujjwalayojana_EditHandler.setText(ujjwalayojanaValue);
 
-        if(awasyojanaValue.compareTo("0")==0)
-        {
-            awasyojana_EditHandler.setText("");
-        }
-        else
             awasyojana_EditHandler.setText(awasyojanaValue);
-        if(sukanyasamridhiyojanaValue.compareTo("0")==0)
-        {
-            sukanyasamridhiyojana_EditHandler.setText("");
-        }
-        else
+
             sukanyasamridhiyojana_EditHandler.setText(sukanyasamridhiyojanaValue);
 
-        if(mudrayojanaValue.compareTo("0")==0)
-        {
-            mudrayojana_EditHandler.setText("");
-        }
-        else
+
             mudrayojana_EditHandler.setText(mudrayojanaValue);
-        if(jivanjyotibimayojanaValue.compareTo("0")==0)
-        {
-            jivanjyotibimayojana_EditHandler.setText("");
-        }
-        else
+
             jivanjyotibimayojana_EditHandler.setText(jivanjyotibimayojanaValue);
 
-        if(surakshabimayojanaValue.compareTo("0")==0)
-        {
-            surakshabimayojana_EditHandler.setText("");
-        }
-        else
             surakshabimayojana_EditHandler.setText(surakshabimayojanaValue);
 
-        if(atalpensionyojanaValue.compareTo("0")==0)
-        {
-            atalpensionyojana_EditHandler.setText("");
-        }
-        else
             atalpensionyojana_EditHandler.setText(atalpensionyojanaValue);
 
-        if(fasalbimayojanaValue.compareTo("0")==0)
-        {
-            fasalbimayojana_EditHandler.setText("");
-        }
-        else
+
             fasalbimayojana_EditHandler.setText(fasalbimayojanaValue);
-        if(krishisinchaiyojanaValue.compareTo("0")==0)
-        {
-            krishisinchaiyojana_EditHandler.setText("");
-        }
-        else
+            kaushalvikasyojana_EditHandler.setText(kaushalvikasyojanaValue);
+
             krishisinchaiyojana_EditHandler.setText(krishisinchaiyojanaValue);
-        if(janaushadiyojanaValue.compareTo("0")==0)
-        {
-            janaushadiyojana_EditHandler.setText("");
-        }
-        else
+
             janaushadiyojana_EditHandler.setText(janaushadiyojanaValue);
-        if(swachhbharatmissiontoiletValue.compareTo("0")==0)
-        {
-            swachhbharatmissiontoilet_EditHandler.setText("");
-        }
-        else
+
             swachhbharatmissiontoilet_EditHandler.setText(swachhbharatmissiontoiletValue);
-        if(soilhealthcardValue.compareTo("0")==0)
-        {
-            soilhealthcard_EditHandler.setText("");
-        }
-        else
+
             soilhealthcard_EditHandler.setText(soilhealthcardValue);
-        if(ladlilakshmiyojanaValue.compareTo("0")==0)
-        {
-            ladlilakshmiyojana_EditHandler.setText("");
-        }
-        else
+
             ladlilakshmiyojana_EditHandler.setText(ladlilakshmiyojanaValue);
-        if(jananisurakshayojanaValue.compareTo("0")==0)
-        {
-            jananisurakshayojana_EditHandler.setText("");
-        }
-        else
+
             jananisurakshayojana_EditHandler.setText(jananisurakshayojanaValue);
-        if(kisancreditcardValue.compareTo("0")==0)
-        {
-            kisancreditcard_EditHandler.setText("");
-        }
-        else
+
             kisancreditcard_EditHandler.setText(kisancreditcardValue);
 
     }

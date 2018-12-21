@@ -118,6 +118,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -172,6 +173,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -225,6 +227,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -277,6 +280,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -329,6 +333,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
 
                         </android.support.design.widget.TextInputLayout>
@@ -381,6 +386,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -434,6 +440,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -487,6 +494,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -541,6 +549,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -595,6 +604,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -648,6 +658,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -701,6 +712,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -755,6 +767,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -808,6 +821,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -861,6 +875,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -914,6 +929,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -967,6 +983,7 @@
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
                                 android:inputType="phone"
+                                android:text="0"
                                 android:hint="No's:"/>
                         </android.support.design.widget.TextInputLayout>
 

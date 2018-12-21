@@ -42,14 +42,14 @@ public class HouseholdActivity extends AppCompatActivity {
     TextView householdID_Handler,household_headNameValue_handler;
     EditText  annualIncome_Handler;
     Spinner typeofhouseSpinnerHandler,categorySpinnerHandler,poverty_statusSpinnerHandler,ownhouseSpinnerHandler
-            ,toilet_column1SpinnerHandler,drainage_column1SpinnerHandler,waste_DoorStepSpinnerHandler,compostSpinnerHandler,biogasSpinnerHandler;
+            ,toilet_column1SpinnerHandler,drainage_SystemSpinnerHandler,waste_CollectionSpinnerHandler,compostSpinnerHandler,biogasSpinnerHandler;
 
     String ubaid,householdID,household_headNameValue,categoryValue,povertyStatusValue,ownHouseValue,typeHouseValue,toiletValue;
     String drainageValue,wastageValue,compostValue,biogasValue,annualIncomeValue;
 
     // Storing server url into String variable.
-    String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformtwo.php";
-    String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
+    String HttpInsertUrl ;//= "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformtwo.php";
+   // String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
     private CoordinatorLayout coordinatorLayout;
 
     @Override
@@ -57,6 +57,7 @@ public class HouseholdActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_household);
+        HttpInsertUrl=getString(R.string.url)+"ubaupdateformtwo.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .householdcoordinatorLayout);
         Bundle bundle = getIntent().getExtras();
@@ -73,9 +74,9 @@ public class HouseholdActivity extends AppCompatActivity {
         poverty_statusSpinnerHandler = (Spinner)findViewById(R.id.spinner_poverty_status);
         ownhouseSpinnerHandler = (Spinner)findViewById(R.id.spinner_ownhouse);
         toilet_column1SpinnerHandler= (Spinner) findViewById(R.id.spinner_toilet_column1);
-        drainage_column1SpinnerHandler=(Spinner)findViewById(R.id.spinner_drainage_column1);
+        drainage_SystemSpinnerHandler=(Spinner)findViewById(R.id.spinner_drainage_column1);
 
-        waste_DoorStepSpinnerHandler= (Spinner)findViewById(R.id.spinner_DoorStep_column1);
+        waste_CollectionSpinnerHandler= (Spinner)findViewById(R.id.spinner_DoorStep_column1);
         compostSpinnerHandler=(Spinner)findViewById(R.id.spinner_compost);
 
         biogasSpinnerHandler = findViewById(R.id.spinner_biogas_column1);
@@ -130,8 +131,8 @@ public class HouseholdActivity extends AppCompatActivity {
         ownHouseValue = ownhouseSpinnerHandler.getSelectedItem().toString();
         typeHouseValue = typeofhouseSpinnerHandler.getSelectedItem().toString();
         toiletValue = toilet_column1SpinnerHandler.getSelectedItem().toString();
-        drainageValue =drainage_column1SpinnerHandler.getSelectedItem().toString();
-        wastageValue = waste_DoorStepSpinnerHandler.getSelectedItem().toString();
+        drainageValue =drainage_SystemSpinnerHandler.getSelectedItem().toString();
+        wastageValue = waste_CollectionSpinnerHandler.getSelectedItem().toString();
         compostValue = compostSpinnerHandler.getSelectedItem().toString();;
         biogasValue = biogasSpinnerHandler.getSelectedItem().toString();
         annualIncomeValue = String.valueOf(annualIncome_Handler.getText());
@@ -171,7 +172,14 @@ public class HouseholdActivity extends AppCompatActivity {
         }
         if(wastageValue.compareTo("Select Value")==0)
         {
-            TextView errorText = (TextView)waste_DoorStepSpinnerHandler.getSelectedView();
+            TextView errorText = (TextView)waste_CollectionSpinnerHandler.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText("Select a Value");//changes the selected item text to this
+        }
+        if(drainageValue.compareTo("Select Value")==0)
+        {
+            TextView errorText = (TextView)drainage_SystemSpinnerHandler.getSelectedView();
             errorText.setError("");
             errorText.setTextColor(Color.RED);//just to highlight that this is an error
             errorText.setText("Select a Value");//changes the selected item text to this
@@ -206,7 +214,7 @@ public class HouseholdActivity extends AppCompatActivity {
         }   
 
         if(typeHouseValue.compareTo("Select Value")==0||categoryValue.compareTo("Select Value")==0||
-                toiletValue.compareTo("Select Value")==0||wastageValue.compareTo("Select Value")==0||annualIncomeValue.compareTo("")==0
+                toiletValue.compareTo("Select Value")==0||wastageValue.compareTo("Select Value")==0||drainageValue.compareTo("Select Value")==0||annualIncomeValue.compareTo("")==0
                 ||household_headNameValue.compareTo("")==0||povertyStatusValue.compareTo("Select Value")==0||ownHouseValue.compareTo("Select Value")==0
                 ||compostValue.compareTo("Select Value")==0||biogasValue.compareTo("Select Value")==0)
             return false;
@@ -303,74 +311,6 @@ public class HouseholdActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
 
     }
-    void  selectDatafromDB(final String ubaidlocal)
-    {
-        // Showing progress dialog at user registration time.
-        progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
-        progressDialog.show();
-        // Creating string request with post method.
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpSelectUrl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String ServerResponse) {
-
-                        // Hiding the progress dialog after all task complete.
-                        progressDialog.dismiss();
-                        //code to globar var
-                        globalVar.setJsonString(ServerResponse);
-                        finish();
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-
-                        // Hiding the progress dialog after all task complete.
-                        progressDialog.dismiss();
-
-                        // Showing error message if something goes wrong.
-                        Snackbar snackbar = Snackbar
-                                .make(coordinatorLayout, "No internet connection!", Snackbar.LENGTH_LONG)
-                                .setAction("RETRY", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                    }
-                                });
-
-                        // Changing message text color
-                        snackbar.setActionTextColor(Color.RED);
-
-                        // Changing action button text color
-                        View sbView = snackbar.getView();
-                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(Color.YELLOW);
-
-                        snackbar.show();
-                        finish();;
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-
-                // Creating Map String Params.
-                Map<String, String> params = new HashMap<String, String>();
-
-                // Adding All values to Params.
-                params.put("ubaid", ubaidlocal);
-
-                return params;
-            }
-
-        };
-
-        // Creating RequestQueue.
-        RequestQueue requestQueue = Volley.newRequestQueue(HouseholdActivity.this);
-
-        // Adding the StringRequest object into requestQueue.
-        requestQueue.add(stringRequest);
-
-    }
 
     public void setValuetoForm(String jsonString){
 
@@ -404,7 +344,7 @@ public class HouseholdActivity extends AppCompatActivity {
             drainageValue= "Select Value";
             wastageValue = jobj.getString("wastecollection");
             if(wastageValue.compareTo("null")==0)
-            wastageValue= "Select Value";
+                  wastageValue= "Select Value";
             compostValue = jobj.getString("compostpit");
                     if(compostValue.compareTo("null")==0)
                         compostValue= "Select Value";
@@ -425,8 +365,8 @@ public class HouseholdActivity extends AppCompatActivity {
         poverty_statusSpinnerHandler.setSelection(setSpinnerPos(poverty_statusSpinnerHandler,povertyStatusValue));
         ownhouseSpinnerHandler.setSelection(setSpinnerPos(ownhouseSpinnerHandler,ownHouseValue));
         toilet_column1SpinnerHandler.setSelection(setSpinnerPos(toilet_column1SpinnerHandler,toiletValue));
-        drainage_column1SpinnerHandler.setSelection(setSpinnerPos(drainage_column1SpinnerHandler,drainageValue));
-        waste_DoorStepSpinnerHandler.setSelection(setSpinnerPos(waste_DoorStepSpinnerHandler,wastageValue));
+        drainage_SystemSpinnerHandler.setSelection(setSpinnerPos(drainage_SystemSpinnerHandler,drainageValue));
+        waste_CollectionSpinnerHandler.setSelection(setSpinnerPos(waste_CollectionSpinnerHandler,wastageValue));
         biogasSpinnerHandler.setSelection(setSpinnerPos(biogasSpinnerHandler,biogasValue));
         compostSpinnerHandler.setSelection(setSpinnerPos(compostSpinnerHandler,compostValue));
         household_headNameValue_handler.setText(household_headNameValue);

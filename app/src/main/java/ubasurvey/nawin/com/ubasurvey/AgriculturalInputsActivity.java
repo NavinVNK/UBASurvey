@@ -43,7 +43,7 @@ public class AgriculturalInputsActivity extends AppCompatActivity {
     String ubaid, chemicalfertilisersValue,chemicalinsecticidesValue,chemicalweedicidesValue,organicmanuresValue,modeofIrrigationValue,systemofIrrigationValue;
 
     // Storing server url into String variable.
-    String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformnine.php";
+    String HttpInsertUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformnine.php";
     String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
     private CoordinatorLayout coordinatorLayout;
 
@@ -51,6 +51,7 @@ public class AgriculturalInputsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agricultural_inputs);
+        HttpInsertUrl=getString(R.string.url)+"ubaupdateformnine.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .agricoordinatelayout);
         progressDialog = new ProgressDialog(AgriculturalInputsActivity.this);

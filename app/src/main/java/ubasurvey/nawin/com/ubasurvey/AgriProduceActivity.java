@@ -44,7 +44,7 @@ public class AgriProduceActivity extends AppCompatActivity {
             crop5areaValue, crop5produceValue;
 
     // Storing server url into String variable.
-    String HttpInsertUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformten.php";
+    String HttpInsertUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaupdateformten.php";
     String HttpSelectUrl = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
     private CoordinatorLayout coordinatorLayout;
 
@@ -53,6 +53,7 @@ public class AgriProduceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_agri_produce);
+        HttpInsertUrl=getString(R.string.url)+"ubaupdateformten.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .agriprodcoordinatelayout);
         progressDialog = new ProgressDialog(AgriProduceActivity.this);
