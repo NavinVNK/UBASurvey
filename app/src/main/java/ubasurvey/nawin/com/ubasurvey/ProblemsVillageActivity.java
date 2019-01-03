@@ -1,5 +1,6 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +48,7 @@ public class ProblemsVillageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_problems_village);
         HttpInsertUrl=getString(R.string.url)+"ubaupdateformthirteen.php";
@@ -157,7 +160,7 @@ public class ProblemsVillageActivity extends AppCompatActivity {
                             {
                                  Intent i = new Intent(ProblemsVillageActivity.this, GeneralInfoActivity.class);
                                 // Starts TargetActivity
-                                 startActivity(i);
+                                 startActivity(i, ActivityOptions.makeSceneTransitionAnimation(ProblemsVillageActivity.this).toBundle());
 
                             }
                             else

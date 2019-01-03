@@ -1,5 +1,6 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import com.github.clans.fab.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,12 +19,14 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import  android.view.MotionEvent;
 import android.view.View;
 import android.support.v7.widget.SearchView;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,11 +52,12 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
     private SearchView searchView;
     private List<Record> RecordList = new ArrayList<>();
     private RecyclerView recyclerView;
+    private FloatingActionButton fab;
     private RecordAdapter mAdapter;
     ChoiceApplication globalVar;
-    private LinearLayout linearLayout;
+    private CoordinatorLayout coordinateLayout;
     String searchString="";
-
+    private DatabaseHelper ubadb;
     public static interface ClickListener{
         public void onClick(View view,int position);
         public void onLongClick(View view,int position);
@@ -107,25 +112,51 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
     // Creating Progress dialog.
     ProgressDialog progressDialog;
 
-
+    String HttpInsertUrl;
     String HttpSelectUrl;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubaselectrecords.php";
     String HttpSelectUrl1;// = "http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubagetformone.php";
     String HttpDeleteUrl;//="http://navinsjavatutorial.000webhostapp.com/ucbsurvey/ubadeleterecord.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_record);
         globalVar=(ChoiceApplication)getApplicationContext();
+        ubadb=DatabaseHelper.getInstance(this);
+        HttpInsertUrl=getString(R.string.url)+"ubainsertformone.php";
         HttpSelectUrl=getString(R.string.url)+"ubaselectrecords.php";
         HttpSelectUrl1=getString(R.string.url)+"ubagetformone.php";
         HttpDeleteUrl=getString(R.string.url)+"ubadeleterecord.php";
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        linearLayout=(LinearLayout)findViewById(R.id.linearlayout);
+        coordinateLayout=findViewById(R.id.linearlayout);
         // toolbar fancy stuff
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.toolbar_title);
+        if(globalVar.getMode())
+        {
+            fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    List<FullRecord> recordList=ubadb.getFullData();
+                    if(recordList.size()>0) {
+                        for(FullRecord r:recordList)
+                           insertToDB(r);
+
+                    }
+                    else
+                    {
+
+                    }
+
+
+
+                }
+            });
+        }
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         emptyView = (TextView) findViewById(R.id.empty_view);
@@ -135,10 +166,10 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
             public void onClick(View view, final int position) {
                 //Values are passing to activity & to fragment as well
                 Record record=mAdapter.getRecordListFiltered().get(position);
-                Toast.makeText(getApplicationContext(), "Selected: " + record.getTitle() + ", " + record.getGenre(), Toast.LENGTH_LONG).show();
+               // Toast.makeText(getApplicationContext(), "Selected: " + record.getTitle() + ", " + record.getGenre(), Toast.LENGTH_LONG).show();
                globalVar.setUbaid(record.getTitle());
                 selectDatafromDB(record.getTitle());
-               // mAdapter.getFilter().filter("tnkaor");
+
             }
 
             @Override
@@ -151,11 +182,11 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
                     deleteDatafromDB(record.getTitle());
 
                 }*/
-                if (globalVar.getVolunteerID().compareTo("admin") == 0) {
+                if (globalVar.getVolunteerID().compareTo("admin") == 0&& !globalVar.getMode()) {
                     final Record record = mAdapter.getRecordListFiltered().get(position);
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SelectRecordActivity.this);
                     // Setting Alert Dialog Title
-                    alertDialogBuilder.setTitle("Delete Record");
+                    alertDialogBuilder.setTitle("Delete Record on Server");
                     // Icon Of Alert Dialog
                     alertDialogBuilder.setIcon(R.drawable.uba);
                     // Setting Alert Dialog Message
@@ -187,6 +218,43 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
 
 
                 }
+                if(globalVar.getMode())
+                {
+                    final Record record = mAdapter.getRecordListFiltered().get(position);
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SelectRecordActivity.this);
+                    // Setting Alert Dialog Title
+                    alertDialogBuilder.setTitle("Delete Record in Local DB");
+                    // Icon Of Alert Dialog
+                    alertDialogBuilder.setIcon(R.drawable.uba);
+                    // Setting Alert Dialog Message
+                    alertDialogBuilder.setMessage("Do you want to delete record with UBAID :"+record.getTitle()+ " With HouseHeadName :"+record.getGenre());
+                    // alertDialogBuilder.setCancelable(false);
+                    alertDialogBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int arg1) {
+
+                            //Toast.makeText(getApplicationContext(), "Delected: " + record.getTitle() + ", " + record.getGenre(), Toast.LENGTH_LONG).show();
+                            globalVar.setUbaid(record.getTitle());
+                            ubadb.deleteRecord(record.getTitle());
+                            prepareRecordData();
+                            dialog.cancel();
+                        }
+                    });
+
+                    alertDialogBuilder.setNegativeButton(
+                            "No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    //Setting the title manually
+                    alertDialog.show();
+
+                }
             }
         }));
         // white background notification bar
@@ -197,7 +265,7 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
             public void onItemClick(int position, View v) {
                // Log.d(TAG, "onItemClick position: " + position);
                 Record record=RecordList.get(position);
-                Toast.makeText(getApplicationContext(), "Selected: " + record.getTitle() + ", " + record.getGenre(), Toast.LENGTH_LONG).show();
+               // Toast.makeText(getApplicationContext(), "Selected: " + record.getTitle() + ", " + record.getGenre(), Toast.LENGTH_LONG).show();
 
 
             }
@@ -211,7 +279,9 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
 
 
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator()); recyclerView.setAdapter(mAdapter); recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new MyDividerItemDecoration(this, DividerItemDecoration.VERTICAL, 36));
         progressDialog = new ProgressDialog(SelectRecordActivity.this);
         prepareRecordData();
@@ -219,84 +289,100 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
     private void prepareRecordData() {
 
       RecordList.clear();
-        progressDialog.setMessage("Loading Records...");
-        progressDialog.show();
+        if (!globalVar.getMode()) {
+            progressDialog.setMessage("Loading Records...");
+            progressDialog.show();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                HttpSelectUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                    HttpSelectUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
 
-                progressDialog.dismiss();
+                    progressDialog.dismiss();
 
-                    try {
+                        try {
 
-                        JSONArray jsonarray = new JSONArray(response);
-                        recyclerView.setVisibility(View.VISIBLE);
-                        emptyView.setVisibility(View.GONE);
-                        for (int i = 0; i < jsonarray.length(); i++) {
-                            JSONObject jsonobject = jsonarray.getJSONObject(i);
-                            String ubaid = jsonobject.getString("ubaid");
-                            String nameofHead = jsonobject.getString("nameofthehead");
-                            String gramPanchayat = jsonobject.getString("grampanchayat");
-                            Record record = new Record(ubaid, nameofHead, gramPanchayat);
-                            RecordList.add(record);
-                        }
-                        //mAdapter.notifyDataSetChanged();
-                        mAdapter.getFilter().filter(searchString);
-
-
-                    } catch (JSONException e) {
-                        recyclerView.setVisibility(View.GONE);
-                        emptyView.setVisibility(View.VISIBLE);
-                        e.printStackTrace();
-                    }
-
-
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                progressDialog.dismiss();
-                //Toast.makeText(SelectRecordActivity.this, "Error" + error.toString(), Toast.LENGTH_SHORT).show();
-                Snackbar snackbar = Snackbar
-                        .make(linearLayout, "No internet connection!", Snackbar.LENGTH_LONG)
-                        .setAction("RETRY", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
+                            JSONArray jsonarray = new JSONArray(response);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            emptyView.setVisibility(View.GONE);
+                            for (int i = 0; i < jsonarray.length(); i++) {
+                                JSONObject jsonobject = jsonarray.getJSONObject(i);
+                                String ubaid = jsonobject.getString("ubaid");
+                                String nameofHead = jsonobject.getString("nameofthehead");
+                                String gramPanchayat = jsonobject.getString("grampanchayat");
+                                Record record = new Record(ubaid, nameofHead, gramPanchayat);
+                                RecordList.add(record);
                             }
-                        });
+                            //mAdapter.notifyDataSetChanged();
+                            mAdapter.getFilter().filter(searchString);
 
-// Changing message text color
-                snackbar.setActionTextColor(Color.RED);
 
-// Changing action button text color
-                View sbView = snackbar.getView();
-                TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                textView.setTextColor(Color.YELLOW);
-                snackbar.show();
+                        } catch (JSONException e) {
+                            recyclerView.setVisibility(View.GONE);
+                            emptyView.setVisibility(View.VISIBLE);
+                            e.printStackTrace();
+                        }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    progressDialog.dismiss();
+                    //Toast.makeText(SelectRecordActivity.this, "Error" + error.toString(), Toast.LENGTH_SHORT).show();
+                    Snackbar snackbar = Snackbar
+                            .make(coordinateLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                            .setAction("RETRY", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                }
+                            });
+
+    // Changing message text color
+                    snackbar.setActionTextColor(Color.RED);
+
+    // Changing action button text color
+                    View sbView = snackbar.getView();
+                    TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.YELLOW);
+                    snackbar.show();
+
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() {
+
+                    // Creating Map String Params.
+                    Map<String, String> params = new HashMap<String, String>();
+
+                    // Adding All values to Params.
+                    params.put("username", globalVar.getVolunteerID());
+
+                    return params;
+                }
+
+            };
+
+
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(stringRequest);
+        } else {
+            List<Record> recordList=ubadb.getAllData();
+            for(Record r:recordList)
+                RecordList.add(r);
+
+
+            if(RecordList.size()>0) {
+                recyclerView.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
+
+                mAdapter.getFilter().filter(searchString);
 
             }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-
-                // Creating Map String Params.
-                Map<String, String> params = new HashMap<String, String>();
-
-                // Adding All values to Params.
-                params.put("username", globalVar.getVolunteerID());
-
-                return params;
+            else
+            {
+                recyclerView.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
             }
-
-        };
-
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        }
     }
 
 
@@ -380,61 +466,72 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
     void  selectDatafromDB(final String ubaidlocal)
     {
         // Showing progress dialog at user registration time.
-        progressDialog.setMessage("Please Wait, We are fetching data from Server");
-        progressDialog.show();
-        // Creating string request with post method.
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpSelectUrl1,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String ServerResponse) {
+        if (!globalVar.getMode()) {
+            progressDialog.setMessage("Please Wait, We are fetching data from Server");
+            progressDialog.show();
+            // Creating string request with post method.
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpSelectUrl1,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String ServerResponse) {
 
-                        // Hiding the progress dialog after all task complete.
-                        progressDialog.dismiss();
-                        //code to globar var
-                        //setValuetoForm(ServerResponse);
-                        globalVar.setJsonString(ServerResponse);
+                            // Hiding the progress dialog after all task complete.
+                            progressDialog.dismiss();
+                            //code to globar var
+                            //setValuetoForm(ServerResponse);
+                            globalVar.setJsonString(ServerResponse);
 
 
-                     /*   Toast toast = Toast.makeText(getApplicationContext(),
-                                "Menu "+globalVar.getJsonString(),
-                                Toast.LENGTH_LONG);
+          /*                  Toast toast = Toast.makeText(getApplicationContext(),
+                                    "Menu "+globalVar.getJsonString(),
+                                    Toast.LENGTH_LONG);
 
-                        toast.show();*/
-                        startActivity(new Intent(SelectRecordActivity.this, FormsMenuActivity.class));
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
+                            toast.show();*/
+                            startActivity(new Intent(SelectRecordActivity.this, FormsMenuActivity.class), ActivityOptions.makeSceneTransitionAnimation(SelectRecordActivity.this).toBundle()
+                            );
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
 
-                        // Hiding the progress dialog after all task complete.
-                        progressDialog.dismiss();
-                        globalVar.setJsonString("");
+                            // Hiding the progress dialog after all task complete.
+                            progressDialog.dismiss();
+                            globalVar.setJsonString("");
 
-                        // Showing error message if something goes wrong.
-                        Toast.makeText(SelectRecordActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
-                        //finish();;
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
+                            // Showing error message if something goes wrong.
+                          //  Toast.makeText(SelectRecordActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                            //finish();;
+                        }
+                    }) {
+                @Override
+                protected Map<String, String> getParams() {
 
-                // Creating Map String Params.
-                Map<String, String> params = new HashMap<String, String>();
+                    // Creating Map String Params.
+                    Map<String, String> params = new HashMap<String, String>();
 
-                // Adding All values to Params.
-                params.put("ubaid", ubaidlocal);
+                    // Adding All values to Params.
+                    params.put("ubaid", ubaidlocal);
 
-                return params;
+                    return params;
+                }
+
+            };
+
+            // Creating RequestQueue.
+            RequestQueue requestQueue = Volley.newRequestQueue(SelectRecordActivity.this);
+
+            // Adding the StringRequest object into requestQueue.
+            requestQueue.add(stringRequest);
+        }
+        else
+            {
+                globalVar.setJsonString(ubadb.getRecordData(ubaidlocal));
+                Log.d("Basicinfo",ubadb.getRecordData(ubaidlocal));
+                startActivity(new Intent(SelectRecordActivity.this, FormsMenuActivity.class), ActivityOptions.makeSceneTransitionAnimation(SelectRecordActivity.this).toBundle()
+                );
+
             }
-
-        };
-
-        // Creating RequestQueue.
-        RequestQueue requestQueue = Volley.newRequestQueue(SelectRecordActivity.this);
-
-        // Adding the StringRequest object into requestQueue.
-        requestQueue.add(stringRequest);
 
     }
 
@@ -475,7 +572,7 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
                         globalVar.setJsonString("");
 
                         // Showing error message if something goes wrong.
-                        Toast.makeText(SelectRecordActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                      //  Toast.makeText(SelectRecordActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
                         //finish();;
                     }
                 }) {
@@ -505,6 +602,83 @@ public class SelectRecordActivity extends AppCompatActivity implements RecordAda
         onBackPressed();
         return true;
     }
+    void  insertToDB(final FullRecord record)
+    {
+        Log.d("Basicinfo", "UBAID = " + record.getUbaid()+"gender = " + record.getGender()+"gram = " + record.getNameofthehead());
+        // Showing progress dialog at user registration time.
+        progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
+        progressDialog.show();
+        // Creating string request with post method.
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,HttpInsertUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String ServerResponse) {
 
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+                        ubadb.deleteRecord(record.getUbaid());
+                        prepareRecordData();
+                       // mAdapter.notifyDataSetChanged();
+                        Log.d("Basicinfo", "Insert = " + ServerResponse);
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+
+                        // Showing error message if something goes wrong.
+                        Snackbar snackbar = Snackbar
+                                .make(coordinateLayout, "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+                        snackbar.show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<String, String>();
+
+                // Adding All values to Params.
+                params.put("ubaid", record.getUbaid());
+                params.put("village", record.getVillage());
+                params.put("grampanchayat", record.getGrampanchayat());
+                params.put("street", record.getStreet());
+                params.put("wardno", record.getWardno());
+                params.put("block", record.getBlock());
+                params.put("district", record.getDistrict());
+                params.put("state", record.getState());
+                params.put("nameofthehead",record.getNameofthehead());
+                params.put("gender", record.getGender());
+                params.put("householdid",record.getHouseholdid());
+                params.put("latitude",record.getLatitude());
+                params.put("longitude",record.getLongitude());
+                params.put("username",record.getUsername());
+
+                return params;
+            }
+
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+
+    }
 
 }

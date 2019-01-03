@@ -1,5 +1,6 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -142,6 +144,7 @@ public class SourceEnergyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_source_energy);
         HttpInsertUrl =getString(R.string.url)+ "ubaupdateformsix.php";
@@ -258,7 +261,8 @@ public class SourceEnergyActivity extends AppCompatActivity {
                 Intent i = new Intent(SourceEnergyActivity.this, ElectappDetailsActivity.class);
 
                 i.putExtra("elecrecord",electricappRecord[position] );//electricappRecord
-                startActivity(i);
+                startActivity(i, ActivityOptions.makeSceneTransitionAnimation(SourceEnergyActivity.this).toBundle()
+                );
 
             }
 

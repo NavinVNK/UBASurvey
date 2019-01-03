@@ -1,11 +1,13 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +33,7 @@ public class FormsMenuActivity extends AppCompatActivity implements RecyclerView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         progressDialog = new ProgressDialog(FormsMenuActivity.this);
         globalVar=(ChoiceApplication)getApplicationContext();
         setContentView(R.layout.activity_forms_menu);
@@ -80,46 +83,60 @@ public class FormsMenuActivity extends AppCompatActivity implements RecyclerView
         switch (item.text)
         {
             case "1.Basic Info" :
-                startActivity(new Intent(FormsMenuActivity.this, BasicinfoActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, BasicinfoActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "2.Househlod Info" :
-                startActivity(new Intent(FormsMenuActivity.this, HouseholdActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, HouseholdActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "3.Respondant Profile":
-                startActivity(new Intent(FormsMenuActivity.this, RespondentProfileActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, RespondentProfileActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "4.Family Member Info":
-                startActivity(new Intent(FormsMenuActivity.this, FamilyInfoActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, FamilyInfoActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "5.Migration Status in Family":
-                startActivity(new Intent(FormsMenuActivity.this, MigrationStatusActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, MigrationStatusActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "6.Goverment Scheme":
-                startActivity(new Intent(FormsMenuActivity.this, GovtSchemesActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, GovtSchemesActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "7.Source of Water":
-                startActivity(new Intent(FormsMenuActivity.this, WaterSourceActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, WaterSourceActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "8.Source of Energy and Power":
-                startActivity(new Intent(FormsMenuActivity.this, SourceEnergyActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, SourceEnergyActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "9.Land Holding Info":
-                startActivity(new Intent(FormsMenuActivity.this, LandInfoActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, LandInfoActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "10.Agricultural Inputs":
-                startActivity(new Intent(FormsMenuActivity.this, AgriculturalInputsActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, AgriculturalInputsActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "11.Agricultural Produce":
-                startActivity(new Intent(FormsMenuActivity.this, AgriProduceActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, AgriProduceActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "12.Livestock Numbers":
-                startActivity(new Intent(FormsMenuActivity.this, LiveStockActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, LiveStockActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "13.Major Problems":
-                startActivity(new Intent(FormsMenuActivity.this, ProblemsVillageActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, ProblemsVillageActivity.class),ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
             case "General Info":
-                startActivity(new Intent(FormsMenuActivity.this, GeneralInfoActivity.class));
+                startActivity(new Intent(FormsMenuActivity.this, GeneralInfoActivity.class), ActivityOptions.makeSceneTransitionAnimation(FormsMenuActivity.this).toBundle()
+                );
                 break;
 
 

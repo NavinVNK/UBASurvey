@@ -6,12 +6,23 @@ import android.content.Intent;
 
 public class ChoiceApplication extends Application {
     int menu;
+
+    boolean mode;
     String ubaid;
     String jsonString;
     String familyjsonString;
     Integer familyMemCount;
     String volunteerID;
     Integer electricalappCount;
+    DatabaseHelper dbHelper;
+    public void setMode(boolean mode) {
+        this.mode = mode;
+    }
+
+    public boolean getMode() {
+
+        return mode;
+    }
 
     public Integer getElectricalappCount() {
         return electricalappCount;

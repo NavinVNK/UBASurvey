@@ -1,5 +1,6 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -128,8 +130,10 @@ Button addButton,nextButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_family_info);
+
         HttpSelectUrl=getString(R.string.url)+"ubaselectfamilydetails.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
                 .familyinfocoordinatorlayout);
@@ -168,7 +172,7 @@ Button addButton,nextButton;
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(FamilyInfoActivity.this, FamilyDetailsActivity.class);
-                startActivityForResult(i,request_Code);
+                startActivityForResult(i,request_Code,ActivityOptions.makeSceneTransitionAnimation(FamilyInfoActivity.this).toBundle());
 
             }
         });

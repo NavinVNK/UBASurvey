@@ -1,23 +1,25 @@
 package ubasurvey.nawin.com.ubasurvey;
 
 
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
+
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.Fragment;
+
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,8 +30,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 
 import com.android.volley.Request;
@@ -41,9 +43,6 @@ import com.android.volley.toolbox.Volley;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +53,7 @@ public class MenuActivity extends AppCompatActivity {
     ImageView insert,update,select,delete;
     ChoiceApplication globalObject;
      CollapsingToolbarLayout collapsingToolbarLayout;
+    DatabaseHelper ubadb;
     private CoordinatorLayout coordinatorLayout;
 
 
@@ -62,8 +62,12 @@ public class MenuActivity extends AppCompatActivity {
     static String HttpupdateUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        ubadb= DatabaseHelper.getInstance(this);
+        //backup();
+       // Log.d("Db",ubadb.getAllData());
         HttpSelectUrl=getString(R.string.url)+"ubagetformone.php";
         HttpupdateUrl = getString(R.string.url)+"ubaupdatemessage.php";
         collapsingToolbarLayout=(CollapsingToolbarLayout)findViewById(R.id.collapsingtoolbar);
@@ -83,7 +87,8 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 globalObject.setMenu(0);
-                startActivity( new Intent(MenuActivity.this, BasicinfoActivity.class));
+
+                startActivity( new Intent(MenuActivity.this, BasicinfoActivity.class),ActivityOptions.makeSceneTransitionAnimation(MenuActivity.this).toBundle());
 
             }
         });
@@ -120,7 +125,7 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 globalObject.setMenu(1);
-                startActivity( new Intent(MenuActivity.this, SelectRecordActivity.class));
+                startActivity( new Intent(MenuActivity.this, SelectRecordActivity.class),ActivityOptions.makeSceneTransitionAnimation(MenuActivity.this).toBundle());
 
             }
         });
@@ -206,8 +211,9 @@ public class MenuActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if(globalObject.getVolunteerID().compareTo("admin")==0) {
             MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_message, menu);
+            inflater.inflate(R.menu.menu_admin, menu);
         }
+
         return true;
     }
     @Override
@@ -215,16 +221,14 @@ public class MenuActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // action with ID action_refresh was selected
             case R.id.action_message:
-/*                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                if (prev != null) {
-                    ft.remove(prev);
-                }
-                ft.addToBackStack(null);*/
+
                 DialogFragment dialogFragment = new MessageFragment();
 
                 dialogFragment.show(getSupportFragmentManager(),"dialog");
+                break;
+            case R.id.action_upload:
+
+                uploadOfflineRecords();
                 break;
 
             default:
@@ -232,6 +236,15 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+    public void uploadOfflineRecords()
+    {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "Upload offline",
+                Toast.LENGTH_LONG);
+
+        toast.show();
+
     }
 
     public static class MessageFragment extends DialogFragment {
@@ -391,4 +404,6 @@ public class MenuActivity extends AppCompatActivity {
 
         }
     }
+
+
 }

@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="info.androidhive.recyclerviewsearch.MainActivity">
     <item
-        android:id="@+id/action_message"
-        android:icon="@drawable/messg"
+        android:id="@+id/action_upload"
+        android:icon="@drawable/upload"
         android:orderInCategory="100"
-        android:title="Message"
+        android:title="Upload"
         app:showAsAction="ifRoom"
-         />
+        />
 </menu>

@@ -2,6 +2,7 @@ package ubasurvey.nawin.com.ubasurvey;
 
 //Location Library
 import android.Manifest;
+import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -17,6 +18,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,14 +77,10 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
     // integer for permissions results request
     private static final int ALL_PERMISSIONS_RESULT = 1011;
     //Location variables end
-    
-    
-    ChoiceApplication globalVar;
+     ChoiceApplication globalVar;
 
     boolean success;
-
-
-    // Creating Progress dialog.
+   // Creating Progress dialog.
     ProgressDialog progressDialog;
 
     // Storing server url into String variable.
@@ -96,7 +95,7 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
     HashMap<String,String> DistrictHashMap;
 
     Double latitute,longitute;
-
+String basicInfo[];
     String ubaid,username,household_headNameValue,genderValue,householdIDValue,villageSpinnerValue, districtSpinnerValue,blockSpinnerValue,wardNoSpinnerValue,streetValue,gramPanchayatSpinnerValue, stateSpinnerValue,villageCode,districtCode,blockCode,latitudeValue,longitutevalue;
     Spinner villageSpinnerHandler, districtSpinnerHandler,genderSpinnerHandler,blockSpinnerHandler,wardNoSpinnerHandler,gramPanchayatSpinnerHandler, stateSpinnerHandler;
     EditText household_headNameValue_handler,householdIDEditTextHandler,streetEdithandler;
@@ -106,12 +105,17 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
     ArrayAdapter<CharSequence> panchayat2_adapter;
     ArrayAdapter<CharSequence> empty_adapter;
     private CoordinatorLayout coordinatorLayout;
+    private DatabaseHelper ubadb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_basic_info);
+        basicInfo=new String[17];
+        ubadb= DatabaseHelper.getInstance(this);
+
         HttpInsertUrl=getString(R.string.url)+"ubainsertformone.php";
         HttpSelectUrl=getString(R.string.url)+"ubagetformone.php";
         HttpUpdatetUrl=getString(R.string.url)+"ubaupdateformone.php";
@@ -142,7 +146,8 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
 
             snackbar.show();
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(BasicinfoActivity.this).toBundle()
+            );
             finish();
         }
 
@@ -272,9 +277,33 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
                 // Calling method to get value from EditText.
               if( GetValueFromForm())
                   if(globalVar.getMenu()==0)
-                      insertToDB(HttpInsertUrl);
+                  {
+                      if(globalVar.getMode())
+                      {
+                          insertToDB();
+                          Intent i = new Intent(BasicinfoActivity.this, HouseholdActivity.class);
+                          i.putExtra("houseid",householdIDValue);
+                          i.putExtra("househeadname",household_headNameValue);
+                          startActivity(i);
+                          finish();
+                      }
+
+                      else
+                         insertToDB(HttpInsertUrl);
+                  }
+
                   else
-                      updateToDB(HttpUpdatetUrl);
+                  {
+                      if(globalVar.getMode())
+                      {
+                          updateToDB();
+                          finish();
+                      }
+
+                      else
+                          updateToDB(HttpUpdatetUrl);
+                  }
+
 
 
               else
@@ -293,30 +322,31 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
     public boolean GetValueFromForm(){
 
        // villageSpinnerValue =  villageSpinnerHandler.getSelectedItem().toString();
-        districtSpinnerValue ="Kancheepuram" ;//districtSpinnerHandler.getSelectedItem().toString();
-        blockSpinnerValue = blockSpinnerHandler.getSelectedItem().toString();
-        gramPanchayatSpinnerValue =  villageSpinnerValue=gramPanchayatSpinnerHandler.getSelectedItem().toString();
+        basicInfo[0]= districtSpinnerValue ="Kancheepuram" ;//districtSpinnerHandler.getSelectedItem().toString();
+        basicInfo[1]=blockSpinnerValue = blockSpinnerHandler.getSelectedItem().toString();
+        basicInfo[2]= gramPanchayatSpinnerValue =  villageSpinnerValue=gramPanchayatSpinnerHandler.getSelectedItem().toString();
         villageName.setText(gramPanchayatSpinnerValue);
-        wardNoSpinnerValue = wardNoSpinnerHandler.getSelectedItem().toString();
-        stateSpinnerValue = "TN";//stateSpinnerHandler.getSelectedItem().toString();
-        villageCode=villageHashMap.get(gramPanchayatSpinnerValue);
-        districtCode="KPM";//DistrictHashMap.get(districtSpinnerValue);
-        blockCode=blockHashMap.get(blockSpinnerValue);
-        streetValue=String.valueOf(streetEdithandler.getText());
-        household_headNameValue = String.valueOf(household_headNameValue_handler.getText());
+        basicInfo[3]=wardNoSpinnerValue = wardNoSpinnerHandler.getSelectedItem().toString();
+        basicInfo[4]=stateSpinnerValue = "TN";//stateSpinnerHandler.getSelectedItem().toString();
+        basicInfo[5]=villageCode=villageHashMap.get(gramPanchayatSpinnerValue);
+        basicInfo[6]=districtCode="KPM";//DistrictHashMap.get(districtSpinnerValue);
+        basicInfo[7]=blockCode=blockHashMap.get(blockSpinnerValue);
+        basicInfo[8]=streetValue=String.valueOf(streetEdithandler.getText());
+        basicInfo[9]=household_headNameValue = String.valueOf(household_headNameValue_handler.getText());
 
-        genderValue = genderSpinnerHandler.getSelectedItem().toString();
-        householdIDValue=String.valueOf(householdIDEditTextHandler.getText());
-        ubaid=stateSpinnerValue+districtCode+blockCode+villageCode+wardNoSpinnerValue+householdIDValue;
+        basicInfo[10]=genderValue = genderSpinnerHandler.getSelectedItem().toString();
+        basicInfo[11]=householdIDValue=String.valueOf(householdIDEditTextHandler.getText());
+        basicInfo[12]= ubaid=stateSpinnerValue+districtCode+blockCode+villageCode+wardNoSpinnerValue+householdIDValue;
         try {
-            latitudeValue = latitute.toString();
-            longitutevalue = longitute.toString();
+            basicInfo[13]= latitudeValue = latitute.toString();
+            basicInfo[14]=longitutevalue = longitute.toString();
         } catch (Exception e) {
             e.printStackTrace();
-            latitudeValue = "0.0";
-            longitutevalue = "0.0";
+            basicInfo[13]= latitudeValue = "0.0";
+            basicInfo[14]= longitutevalue = "0.0";
         }
-
+     basicInfo[15]=username;
+        basicInfo[16]=globalVar.getUbaid();
         if(household_headNameValue.length()==0){
             household_headNameValue_handler.setError("Cannot be empty");
         }
@@ -453,6 +483,10 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
        requestQueue.add(stringRequest);
 
    }
+    public void insertToDB() {
+
+        ubadb.insertData(basicInfo);
+    }
     void  updateToDB(String HttpUrl)
     {
         // Showing progress dialog at user registration time.
@@ -548,6 +582,11 @@ public class BasicinfoActivity extends AppCompatActivity implements GoogleApiCli
         // Adding the StringRequest object into requestQueue.
         requestQueue.add(stringRequest);
 
+    }
+    public void updateToDB() {
+
+        ubadb.updateData(basicInfo);
+        globalVar.setJsonString(ubadb.getRecordData(ubaid));
     }
 
     public void setValuetoForm(String jsonString){

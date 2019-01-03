@@ -1,5 +1,6 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,6 +50,7 @@ public class WaterSourceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_water_source);
         HttpInsertUrl =getString(R.string.url)+"ubaupdateformseven.php";
@@ -261,7 +264,8 @@ public class WaterSourceActivity extends AppCompatActivity {
                                Intent i = new Intent(WaterSourceActivity.this, SourceEnergyActivity.class);
 
                                 // Starts TargetActivity
-                                startActivity(i);
+                                startActivity(i, ActivityOptions.makeSceneTransitionAnimation(WaterSourceActivity.this).toBundle()
+                                );
                             }
 
                             else

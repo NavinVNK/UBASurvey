@@ -1,5 +1,6 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +49,7 @@ public class LandInfoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_land_info);
         HttpInsertUrl=getString(R.string.url)+"ubaupdateformeight.php";
@@ -158,7 +161,8 @@ public class LandInfoActivity extends AppCompatActivity {
                             {
                                  Intent i = new Intent(LandInfoActivity.this, AgriculturalInputsActivity.class);
                                 // Starts TargetActivity
-                                 startActivity(i);
+                                 startActivity(i, ActivityOptions.makeSceneTransitionAnimation(LandInfoActivity.this).toBundle()
+                                 );
 
                             }
                             else

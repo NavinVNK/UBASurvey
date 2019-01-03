@@ -1,5 +1,6 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,7 +57,7 @@ public class HouseholdActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_household);
         HttpInsertUrl=getString(R.string.url)+"ubaupdateformtwo.php";
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id
@@ -253,7 +255,7 @@ public class HouseholdActivity extends AppCompatActivity {
                                 Intent i = new Intent(HouseholdActivity.this, RespondentProfileActivity.class);
 
                                 // Starts TargetActivity
-                                startActivity(i);
+                                startActivity(i, ActivityOptions.makeSceneTransitionAnimation(HouseholdActivity.this).toBundle());
                             }
 
                             else

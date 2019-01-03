@@ -2,6 +2,7 @@ package ubasurvey.nawin.com.ubasurvey;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,11 +30,13 @@ import java.util.Map;
 
 public class ChangePswActivity extends AppCompatActivity {
 
-
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+    static final String KEY1 = "password";
     // Creating EditText.
     EditText OldPassword, NewPassword ;
 
-TextView  Email;
+TextView  usernameTextView;
     // Creating button;
     Button InsertButton;
 
@@ -55,15 +58,17 @@ TextView  Email;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.change_psw);
+        prefs = getSharedPreferences("username", MODE_PRIVATE);
+        editor = prefs.edit();
         HttpUrl=getString(R.string.url)+"changepsw.php";
         relativeLayout=(RelativeLayout)findViewById(R.id.pswrelativelayout);
         // Assigning ID's to EditText.
         OldPassword = (EditText) findViewById(R.id.oldpsw);
         NewPassword = (EditText) findViewById(R.id.newpsw);
-        Email = (TextView) findViewById(R.id.username);
+        usernameTextView = (TextView) findViewById(R.id.username);
         Bundle bundle = getIntent().getExtras();
         userName=bundle.getString("value1");
-        Email.setText("User Nmae : "+userName);
+        usernameTextView.setText("User Nmae : "+userName);
 
         // Assigning ID's to Button.
         InsertButton = (Button) findViewById(R.id.btn_change);
@@ -108,7 +113,12 @@ TextView  Email;
 
                                 // Hiding the progress dialog after all task complete.
                                 progressDialog.dismiss();
-
+                              if(ServerResponse.compareTo("1")==0)
+                              {
+                                  editor.putString(KEY1, NewPasswordHolder);
+                                  //---saves the values---
+                                  editor.commit();
+                              }
                                 // Showing response message coming from server.
                                // Toast.makeText(ChangePswActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
                                 Intent data = new Intent();
@@ -176,7 +186,7 @@ TextView  Email;
 
         OldPasswordHolder = OldPassword.getText().toString().trim();
         NewPasswordHolder = NewPassword.getText().toString().trim();
-        //EmailHolder = Email.getText().toString().trim();
+        //EmailHolder = usernameTextView.getText().toString().trim();
 
     }
 

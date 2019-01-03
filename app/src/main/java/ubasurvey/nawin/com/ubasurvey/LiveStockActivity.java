@@ -1,5 +1,6 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +49,7 @@ public class LiveStockActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_live_stock);
@@ -185,7 +188,7 @@ public class LiveStockActivity extends AppCompatActivity {
                                  Intent i = new Intent(LiveStockActivity.this, ProblemsVillageActivity.class);
 
                                 // Starts TargetActivity
-                                  startActivity(i);
+                                  startActivity(i, ActivityOptions.makeSceneTransitionAnimation(LiveStockActivity.this).toBundle());
                             }
 
                             else

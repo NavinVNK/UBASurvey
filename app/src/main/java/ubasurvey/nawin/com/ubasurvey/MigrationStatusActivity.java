@@ -1,5 +1,6 @@
 package ubasurvey.nawin.com.ubasurvey;
 
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -49,6 +51,7 @@ LinearLayout layoutFamilymigration,layoutDaymonth,layoutYears;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_migration_status);
         HttpInsertUrl =getString(R.string.url)+"ubaupdateformfour.php";
@@ -159,7 +162,8 @@ LinearLayout layoutFamilymigration,layoutDaymonth,layoutYears;
                             {
                                 Intent i = new Intent(MigrationStatusActivity.this, GovtSchemesActivity.class);
                                 // Starts TargetActivity
-                                 startActivity(i);
+                                 startActivity(i, ActivityOptions.makeSceneTransitionAnimation(MigrationStatusActivity.this).toBundle()
+                                 );
 
                             }
                             else
